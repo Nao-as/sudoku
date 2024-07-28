@@ -12,7 +12,8 @@ export const SudokuInit = () => {
 		row: number;
 		col: number;
 	} | null>(null);
-	const [errorCells, setErrorCells] = useState<Set<string>>(new Set()); // エラーセルの管理
+	// const [errorCells, setErrorCells] = useState<Set<string>>(new Set()); // エラーセルの管理
+	const [errorCells, setErrorCells] = useState<string[]>([]); // エラーセルの管理
 	const [timeElapsed, setTimeElapsed] = useState<number>(0); // 時間を秒単位で管理
 	const [opened, setOpen] = useState(false);
 
@@ -41,7 +42,7 @@ export const SudokuInit = () => {
 
 	// 空のセルのみ選択可能
 	const handleCellClick = (row: number, col: number) => {
-		if (board[row][col] === 0 || errorCells.has(`${row}-${col}`)) {
+		if (board[row][col] === 0 || errorCells.includes(`${row}-${col}`)) {
 			// 空のセルまたはエラーセルのみ選択可能
 			setSelectedCell({ row, col });
 		}
@@ -76,13 +77,14 @@ export const SudokuInit = () => {
 		// 空のセルにカーソルスタイルを設定
 		if (
 			board[rowIndex][colIndex] === 0 ||
-			errorCells.has(`${rowIndex}-${colIndex}`)
+			// errorCells.has(`${rowIndex}-${colIndex}`)
+			errorCells.includes(`${rowIndex}-${colIndex}`)
 		) {
 			baseStyle.cursor = "pointer";
 		}
 
 		// エラーセルの文字色
-		if (errorCells.has(`${rowIndex}-${colIndex}`)) baseStyle.color = "red";
+		if (errorCells.includes(`${rowIndex}-${colIndex}`)) baseStyle.color = "red";
 
 		return { ...baseStyle, ...thickBorderStyle };
 	};
@@ -99,15 +101,23 @@ export const SudokuInit = () => {
 
 				if (isValid(board, row, col, number)) {
 					setBoard(newBoard);
-					setErrorCells(
-						(prev) =>
-							new Set([...prev].filter((cell) => cell !== `${row}-${col}`)),
+					// setErrorCells(
+					// 	(prev) =>
+					// 		new Set([...prev].filter((cell) => cell !== `${row}-${col}`)),
+					// );
+					// setErrorCells((prev) =>
+					// 	prev.filter((cell) => cell !== `${row}-${col}`),
+					// );
+
+					setErrorCells((prev) =>
+						prev.filter((cell) => cell !== `${row}-${col}`),
 					);
 					setSelectedCell(null); // 選択解除
 				} else {
 					setBoard(newBoard);
 					setErrorNum(errorNum + 1);
-					setErrorCells((prev) => new Set(prev).add(`${row}-${col}`));
+					// setErrorCells((prev) => new Set(prev).add(`${row}-${col}`));
+					setErrorCells((prev) => [...prev, `${row}-${col}`]);
 					setSelectedCell({ row, col });
 				}
 				// 正しい数値が入力された場合は再選択不可にする
