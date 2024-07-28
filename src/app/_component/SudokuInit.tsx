@@ -151,11 +151,9 @@ export const SudokuInit = () => {
 						))}
 					</Group>
 
-					<GameOverModal
-						isGameOver={isGameOver}
-						setGameOver={setGameOver}
-						setIsStart={setIsStart}
-					/>
+					{/* ゲームオーバーモーダル */}
+					<GameOverModal isGameOver={isGameOver} />
+					{/* ゲームクリアモーダル */}
 					<GameClearModal
 						timeElapsed={timeElapsed}
 						isGameComplete={isGameComplete}

@@ -12,18 +12,17 @@ import { Button, Modal, Stack, Text } from "@mantine/core";
  * @returns
  */
 export const GameOverModal = ({
-	setIsStart,
 	isGameOver,
-	setGameOver,
 }: {
-	setIsStart: React.Dispatch<React.SetStateAction<boolean>>;
 	isGameOver: boolean;
-	setGameOver: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+	// TODO: ゲームオーバー時にDBにスコアを保存する処理を追加
+
 	const gameOver = () => {
 		// console.log("ゲームオーバー");
-		setIsStart(false);
-		setGameOver(false);
+		// setIsStart(false);
+		// setGameOver(false);
+		window.location.reload();
 	};
 
 	return (
