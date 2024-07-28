@@ -38,7 +38,7 @@ export const GameClearModal = ({
 		>
 			<Stack>
 				<Text mb={16}>
-					クリアおめでとうございます！
+					クリアおめでとう~!(^○^)
 					<br />
 					かかった時間は{timeElapsed}秒です
 				</Text>

@@ -17,7 +17,7 @@ export const GameStartModal = ({
 	return (
 		<Modal withCloseButton={false} opened={true} onClose={() => {}}>
 			<Container>
-				<Title>まいこの数独アプリ</Title>
+				<Title fz={{ base: 24, md: "h2" }}>まいこの数独アプリ</Title>
 
 				<Text my={16}>
 					数独は、1から9までの数字を使って、
@@ -29,10 +29,11 @@ export const GameStartModal = ({
 					すべてのマスを埋めるパズルです。
 				</Text>
 
-				<Text c="pink" fw={"bold"} my={16}>
-					難易度設定は開発中だよ~
-				</Text>
 				<Button onClick={setIsStart}>ゲームスタート</Button>
+
+				<Text c="pink" fw={"bold"} my={16}>
+					難易度設定は開発中~
+				</Text>
 			</Container>
 		</Modal>
 	);

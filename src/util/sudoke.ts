@@ -88,7 +88,7 @@ const isValid = (
 const removeCells = (board: number[][]): void => {
 	// const newBoard = board.map((row) => [...row]);
 
-	let attempts = 5; // 難易度に応じて調整可能
+	let attempts = 12; // 難易度に応じて調整可能
 	while (attempts > 0) {
 		const row = Math.floor(Math.random() * 9);
 		const col = Math.floor(Math.random() * 9);

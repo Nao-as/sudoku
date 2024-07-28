@@ -16,11 +16,9 @@ export const GameOverModal = ({
 }: {
 	isGameOver: boolean;
 }) => {
-	// TODO: ゲームオーバー時にDBにスコアを保存する処理を追加
+	// TODO:ゲームオーバー時にDBにスコアを保存する処理を追加
 
 	const gameOver = () => {
-		// console.log("ゲームオーバー");
-
 		window.location.reload();
 	};
 
@@ -34,7 +32,7 @@ export const GameOverModal = ({
 		>
 			<Stack>
 				<Text mb={16}>
-					３回失敗したので残念です、
+					３回失敗したので残念だけど、
 					<br />
 					ゲームオーバーになりました
 				</Text>
