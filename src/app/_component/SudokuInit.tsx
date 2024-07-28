@@ -158,8 +158,8 @@ export const SudokuInit = () => {
 						<ActionIcon
 							color="gray"
 							onClick={() => deleteNumberClick()}
-							w={{ base: 32, md: 48 }}
-							h={{ base: 32, md: 48 }}
+							w={{ base: 30, md: 48 }}
+							h={{ base: 30, md: 48 }}
 						>
 							<TbTrash />
 						</ActionIcon>
