@@ -1,8 +1,9 @@
 "use client";
 
 import { generateSudoku, isValid } from "@/util/sudoke";
-import { Button, Group, Modal, Table, Text } from "@mantine/core";
+import { ActionIcon, Button, Group, Modal, Table, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
+import { TbTrash } from "react-icons/tb";
 
 export const SudokuInit = () => {
 	const [isStart, setIsStart] = useState<boolean>(false);
@@ -12,7 +13,6 @@ export const SudokuInit = () => {
 		row: number;
 		col: number;
 	} | null>(null);
-	// const [errorCells, setErrorCells] = useState<Set<string>>(new Set()); // エラーセルの管理
 	const [errorCells, setErrorCells] = useState<string[]>([]); // エラーセルの管理
 	const [timeElapsed, setTimeElapsed] = useState<number>(0); // 時間を秒単位で管理
 	const [opened, setOpen] = useState(false);
@@ -159,25 +159,17 @@ export const SudokuInit = () => {
 							</Table.Tbody>
 						</Table>
 						<Group mt={12} justify="center" gap={8}>
+							{/* deleteするボタン */}
+							<ActionIcon color="gray" onClick={() => handleNumberClick(0)}>
+								<TbTrash />
+							</ActionIcon>
+						</Group>
+						<Group mt={12} justify="center" gap={8}>
 							{Array.from({ length: 9 }, (_, i) => i + 1).map((number) => (
-								<Button
-									key={number}
-									w={48}
-									h={48}
-									onClick={() => handleNumberClick(number)}
-								>
+								<Button key={number} onClick={() => handleNumberClick(number)}>
 									{number}
 								</Button>
 							))}
-							{/* deleteするボタン */}
-							<Button
-								color="gray"
-								w={68}
-								h={48}
-								onClick={() => handleNumberClick(0)}
-							>
-								削除
-							</Button>
 						</Group>
 						{/*  */}
 						<Modal
