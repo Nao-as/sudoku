@@ -1,6 +1,6 @@
 "use client";
 
-import { Table } from "@mantine/core";
+import { Paper, Table } from "@mantine/core";
 import { useCallback } from "react";
 
 type Props = {
@@ -15,7 +15,12 @@ type Props = {
 /**
  * 数独のボードを表示するコンポーネント
  *
- * @param param0
+ * @component
+ * @param {number[][]} board - 数独のボード
+ * @param {string[]} errorCells - エラーセルの配列
+ * @param {React.Dispatch<React.SetStateAction<{ row: number; col: number } | null>} setSelectedCell - 選択されたセルを設定する関数
+ * @param {{ row: number; col: number } | null} selectedCell - 選択されたセル
+ *
  * @returns
  */
 export const SudokuBoard = ({
@@ -62,8 +67,10 @@ export const SudokuBoard = ({
 			}
 
 			// エラーセルの文字色
-			if (errorCells.includes(`${rowIndex}-${colIndex}`))
+			if (errorCells.includes(`${rowIndex}-${colIndex}`)) {
 				baseStyle.color = "red";
+				baseStyle.backgroundColor = "#f9d2d2";
+			}
 
 			return { ...baseStyle, ...thickBorderStyle };
 		},
@@ -71,28 +78,34 @@ export const SudokuBoard = ({
 	);
 
 	return (
-		<Table tabIndex={0}>
-			<Table.Tbody>
-				{board.map((row, rowIndex) => (
-					// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-					<Table.Tr key={rowIndex}>
-						{row.map((cell, colIndex) => (
-							<Table.Td
-								p={2}
-								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-								key={colIndex}
-								w={{ base: 40, md: 60 }}
-								h={{ base: 40, md: 60 }}
-								ta={"center"}
-								style={getCellStyle(rowIndex, colIndex)}
-								onClick={() => handleCellClick(rowIndex, colIndex)}
-							>
-								{cell !== 0 ? cell : ""}
-							</Table.Td>
-						))}
-					</Table.Tr>
-				))}
-			</Table.Tbody>
-		</Table>
+		<Paper
+			p={12}
+			mt={8}
+			style={{ boxShadow: "0 0 4px #7e7e7e", borderRadius: 4 }}
+		>
+			<Table tabIndex={0}>
+				<Table.Tbody>
+					{board.map((row, rowIndex) => (
+						// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+						<Table.Tr key={rowIndex}>
+							{row.map((cell, colIndex) => (
+								<Table.Td
+									p={2}
+									// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+									key={colIndex}
+									w={{ base: 40, md: 60 }}
+									h={{ base: 40, md: 60 }}
+									ta={"center"}
+									style={getCellStyle(rowIndex, colIndex)}
+									onClick={() => handleCellClick(rowIndex, colIndex)}
+								>
+									{cell !== 0 ? cell : ""}
+								</Table.Td>
+							))}
+						</Table.Tr>
+					))}
+				</Table.Tbody>
+			</Table>
+		</Paper>
 	);
 };

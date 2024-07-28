@@ -8,6 +8,7 @@ import { SudokuBoard } from "./SudokuBoard";
 import { GameOverModal } from "./GameOverModal";
 import { GameClearModal } from "./GameClearModal";
 import { GameStartModal } from "./GameStartModal";
+import { GameProgress } from "./GameProgress";
 
 export const SudokuInit = () => {
 	const [isStart, setIsStart] = useState<boolean>(false);
@@ -142,10 +143,7 @@ export const SudokuInit = () => {
 				<GameStartModal setIsStart={() => setIsStart(true)} />
 			) : (
 				<>
-					<Group p={8} mb={2} justify="right">
-						<Text>ミス数: {errorCells.length}/3</Text>
-						<Text>経過時間:{timeElapsed}秒</Text>
-					</Group>
+					<GameProgress errorCells={errorCells} timeElapsed={timeElapsed} />
 
 					<SudokuBoard
 						board={board}
@@ -156,17 +154,26 @@ export const SudokuInit = () => {
 
 					{/* 操作ボタン */}
 					<Group mt={12} justify="center" gap={8}>
-						{/* deleteするボタン */}
-						<ActionIcon color="gray" onClick={() => deleteNumberClick()}>
+						{/* delete */}
+						<ActionIcon
+							color="gray"
+							onClick={() => deleteNumberClick()}
+							w={{ base: 30, md: 48 }}
+							h={{ base: 30, md: 48 }}
+						>
 							<TbTrash />
 						</ActionIcon>
+						{/* TODO:他のボタン機能の追加 */}
 					</Group>
 					<Group mt={12} justify="center" gap={8}>
 						{Array.from({ length: 9 }, (_, i) => i + 1).map((number) => (
 							<Button
 								key={number}
+								color="lime"
 								onClick={() => handleNumberClick(number)}
 								disabled={disableNumberCounts.get(number) === 9}
+								w={{ base: 30, md: 48 }}
+								h={{ base: 30, md: 48 }}
 							>
 								{number}
 							</Button>

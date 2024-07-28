@@ -29,10 +29,11 @@ export const GameStartModal = ({
 					すべてのマスを埋めるパズルです。
 				</Text>
 
-				<Text c="pink" fw={"bold"} my={16}>
-					難易度設定は開発中だよ~
-				</Text>
 				<Button onClick={setIsStart}>ゲームスタート</Button>
+
+				<Text c="pink" fw={"bold"} my={16}>
+					難易度設定は開発中~
+				</Text>
 			</Container>
 		</Modal>
 	);
