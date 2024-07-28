@@ -20,8 +20,7 @@ export const GameOverModal = ({
 
 	const gameOver = () => {
 		// console.log("ゲームオーバー");
-		// setIsStart(false);
-		// setGameOver(false);
+
 		window.location.reload();
 	};
 

@@ -21,16 +21,36 @@ export const SudokuInit = () => {
 	const [timeElapsed, setTimeElapsed] = useState<number>(0); // 時間を秒単位で管理
 	const [isGameOver, setGameOver] = useState(false);
 	const [isGameComplete, setIsGameComplete] = useState<boolean>(false); // ゲームクリア状態を管理
+	const [disableNumberCounts, setDisableNumberCounts] = useState<
+		Map<number, number>
+	>(new Map()); // 数字の使用回数を管理
 
 	// ここに数独のロジックを書く
 	useEffect(() => {
 		if (!isStart) return;
 		const generateBoard = generateSudoku();
 		setBoard(generateBoard);
+		calculateNumberCounts(generateBoard);
+
 		setSelectedCell(null);
 		setErrorCells([]);
 		setIsTimerRunning(true);
 	}, [isStart]);
+
+	const calculateNumberCounts = (board: number[][]) => {
+		const counts = new Map<number, number>();
+		// biome-ignore lint/complexity/noForEach: <explanation>
+		board.forEach((row) => {
+			// biome-ignore lint/complexity/noForEach: <explanation>
+			row.forEach((num) => {
+				if (num !== 0) {
+					counts.set(num, (counts.get(num) || 0) + 1);
+				}
+			});
+		});
+
+		setDisableNumberCounts(counts);
+	};
 
 	useEffect(() => {
 		let timerId: NodeJS.Timeout | null = null;
@@ -92,14 +112,12 @@ export const SudokuInit = () => {
 						prev.filter((cell) => cell !== `${row}-${col}`),
 					);
 					setSelectedCell(null); // 選択解除
+					calculateNumberCounts(newBoard);
 				} else {
 					setBoard(newBoard);
 					setErrorCells((prev) => [...prev, `${row}-${col}`]);
 					setSelectedCell({ row, col });
 				}
-				// 正しい数値が入力された場合は再選択不可にする
-				// if (isValid(newBoard, row, col, number)) {
-				// }
 			}
 		}
 	};
@@ -145,7 +163,11 @@ export const SudokuInit = () => {
 					</Group>
 					<Group mt={12} justify="center" gap={8}>
 						{Array.from({ length: 9 }, (_, i) => i + 1).map((number) => (
-							<Button key={number} onClick={() => handleNumberClick(number)}>
+							<Button
+								key={number}
+								onClick={() => handleNumberClick(number)}
+								disabled={disableNumberCounts.get(number) === 9}
+							>
 								{number}
 							</Button>
 						))}
