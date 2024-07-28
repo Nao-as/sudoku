@@ -1,6 +1,7 @@
 "use client";
 
 import { Table } from "@mantine/core";
+import { useCallback } from "react";
 
 type Props = {
 	board: number[][];
@@ -31,42 +32,43 @@ export const SudokuBoard = ({
 		}
 	};
 
-	const getCellStyle = (
-		rowIndex: number,
-		colIndex: number,
-	): React.CSSProperties => {
-		const baseStyle: React.CSSProperties = {
-			border: "1px solid #6f6f6f",
-		};
+	const getCellStyle = useCallback(
+		(rowIndex: number, colIndex: number): React.CSSProperties => {
+			const baseStyle: React.CSSProperties = {
+				border: "1px solid #6f6f6f",
+			};
 
-		const thickBorderStyle = {
-			borderLeftWidth: colIndex % 3 === 0 ? "3px" : "1px",
-			borderTopWidth: rowIndex % 3 === 0 ? "3px" : "1px",
-			borderRightWidth: colIndex === 8 ? "3px" : "1px",
-			borderBottomWidth: rowIndex === 8 ? "3px" : "1px",
-		};
+			const thickBorderStyle = {
+				borderLeftWidth: colIndex % 3 === 0 ? "3px" : "1px",
+				borderTopWidth: rowIndex % 3 === 0 ? "3px" : "1px",
+				borderRightWidth: colIndex === 8 ? "3px" : "1px",
+				borderBottomWidth: rowIndex === 8 ? "3px" : "1px",
+			};
 
-		if (
-			selectedCell &&
-			selectedCell.row === rowIndex &&
-			selectedCell.col === colIndex
-		) {
-			baseStyle.backgroundColor = "lightblue"; // 選択されたセルのハイライト
-		}
+			if (
+				selectedCell &&
+				selectedCell.row === rowIndex &&
+				selectedCell.col === colIndex
+			) {
+				baseStyle.backgroundColor = "lightblue"; // 選択されたセルのハイライト
+			}
 
-		// 空のセルにカーソルスタイルを設定
-		if (
-			board[rowIndex][colIndex] === 0 ||
-			errorCells.includes(`${rowIndex}-${colIndex}`)
-		) {
-			baseStyle.cursor = "pointer";
-		}
+			// 空のセルにカーソルスタイルを設定
+			if (
+				board[rowIndex][colIndex] === 0 ||
+				errorCells.includes(`${rowIndex}-${colIndex}`)
+			) {
+				baseStyle.cursor = "pointer";
+			}
 
-		// エラーセルの文字色
-		if (errorCells.includes(`${rowIndex}-${colIndex}`)) baseStyle.color = "red";
+			// エラーセルの文字色
+			if (errorCells.includes(`${rowIndex}-${colIndex}`))
+				baseStyle.color = "red";
 
-		return { ...baseStyle, ...thickBorderStyle };
-	};
+			return { ...baseStyle, ...thickBorderStyle };
+		},
+		[board, errorCells, selectedCell],
+	);
 
 	return (
 		<Table tabIndex={0}>
@@ -79,8 +81,8 @@ export const SudokuBoard = ({
 								p={2}
 								// biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
 								key={colIndex}
-								w={60}
-								h={60}
+								w={{ base: 40, md: 60 }}
+								h={{ base: 40, md: 60 }}
 								ta={"center"}
 								style={getCellStyle(rowIndex, colIndex)}
 								onClick={() => handleCellClick(rowIndex, colIndex)}

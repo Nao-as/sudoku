@@ -13,9 +13,11 @@ import { useRouter } from "next/navigation";
  * @returns
  */
 export const GameClearModal = ({
+	timeElapsed,
 	isGameComplete,
 	setIsGameComplete,
 }: {
+	timeElapsed: number;
 	isGameComplete: boolean;
 	setIsGameComplete: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
@@ -38,6 +40,7 @@ export const GameClearModal = ({
 				<Text mb={16}>
 					クリアおめでとうございます！
 					<br />
+					かかった時間は{timeElapsed}秒です
 				</Text>
 
 				<Button onClick={gameClear}>最初に戻る</Button>
