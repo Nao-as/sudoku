@@ -1,12 +1,13 @@
 "use client";
 
 import { generateSudoku, isValid } from "@/util/sudoke";
-import { ActionIcon, Button, Container, Group, Text } from "@mantine/core";
+import { ActionIcon, Button, Group, Text } from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 import { TbTrash } from "react-icons/tb";
 import { SudokuBoard } from "./SudokuBoard";
 import { GameOverModal } from "./GameOverModal";
 import { GameClearModal } from "./GameClearModal";
+import { GameStartModal } from "./GameStartModal";
 
 export const SudokuInit = () => {
 	const [isStart, setIsStart] = useState<boolean>(false);
@@ -16,6 +17,7 @@ export const SudokuInit = () => {
 		col: number;
 	} | null>(null);
 	const [errorCells, setErrorCells] = useState<string[]>([]); // エラーセルの管理
+	const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
 	const [timeElapsed, setTimeElapsed] = useState<number>(0); // 時間を秒単位で管理
 	const [isGameOver, setGameOver] = useState(false);
 	const [isGameComplete, setIsGameComplete] = useState<boolean>(false); // ゲームクリア状態を管理
@@ -27,14 +29,25 @@ export const SudokuInit = () => {
 		setBoard(generateBoard);
 		setSelectedCell(null);
 		setErrorCells([]);
-
-		// タイマーを開始
-		const timer = setInterval(() => {
-			setTimeElapsed((prev) => prev + 1);
-		}, 1000);
-
-		return () => clearInterval(timer);
+		setIsTimerRunning(true);
 	}, [isStart]);
+
+	useEffect(() => {
+		let timerId: NodeJS.Timeout | null = null;
+
+		if (isTimerRunning) {
+			timerId = setInterval(() => {
+				setTimeElapsed((prev) => prev + 1);
+			}, 1000);
+		} else if (!isTimerRunning && timeElapsed !== 0) {
+			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			clearInterval(timerId!);
+		}
+
+		return () => {
+			if (timerId) clearInterval(timerId);
+		};
+	}, [isTimerRunning, timeElapsed]);
 
 	const checkGameWin = useCallback(() => {
 		if (board.length === 0) return false;
@@ -55,18 +68,13 @@ export const SudokuInit = () => {
 	useEffect(() => {
 		if (checkGameWin()) {
 			setIsGameComplete(true);
+			setIsTimerRunning(false); // タイマーを停止
 		}
 	}, [board, errorCells, checkGameWin]);
 
 	useEffect(() => {
 		if (errorCells.length === 3) setGameOver(true);
 	}, [errorCells]);
-
-	const gameOver = () => {
-		// console.log("ゲームオーバー");
-		setIsStart(false);
-		setGameOver(false);
-	};
 
 	const handleNumberClick = (number: number) => {
 		if (selectedCell) {
@@ -113,9 +121,7 @@ export const SudokuInit = () => {
 	return (
 		<div className="">
 			{!isStart ? (
-				<Container>
-					<Button onClick={() => setIsStart(true)}>問題を開始する</Button>
-				</Container>
+				<GameStartModal setIsStart={() => setIsStart(true)} />
 			) : (
 				<>
 					<Group p={8} mb={2} justify="right">
@@ -151,6 +157,7 @@ export const SudokuInit = () => {
 						setIsStart={setIsStart}
 					/>
 					<GameClearModal
+						timeElapsed={timeElapsed}
 						isGameComplete={isGameComplete}
 						setIsGameComplete={setIsGameComplete}
 					/>
