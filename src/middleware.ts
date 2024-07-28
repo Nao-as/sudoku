@@ -7,6 +7,8 @@ export const config = {
 
 // ミドルウェア関数
 export function middleware(request: NextRequest) {
+	NextResponse.next();
+
 	// 環境変数がproductionでない場合、進行する
 	if (process.env.NODE_ENV !== "production") return NextResponse.next();
 
