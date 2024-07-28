@@ -1,9 +1,10 @@
 "use client";
 
 import { Button, Modal, Stack, Text } from "@mantine/core";
+import { useRouter } from "next/navigation";
 
 /**
- * ゲームオーバー時に表示するモーダル
+ * ゲームクリア時に表示するモーダル
  *
  * @component
  * @param {boolean} isStart - ゲームが開始しているかどうか
@@ -11,37 +12,35 @@ import { Button, Modal, Stack, Text } from "@mantine/core";
  * @param {boolean} open - モーダルを開くかどうか
  * @returns
  */
-export const GameOverModal = ({
-	setIsStart,
-	isGameOver,
-	setGameOver,
+export const GameClearModal = ({
+	isGameComplete,
+	setIsGameComplete,
 }: {
-	setIsStart: React.Dispatch<React.SetStateAction<boolean>>;
-	isGameOver: boolean;
-	setGameOver: React.Dispatch<React.SetStateAction<boolean>>;
+	isGameComplete: boolean;
+	setIsGameComplete: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-	const gameOver = () => {
-		// console.log("ゲームオーバー");
-		setIsStart(false);
-		setGameOver(false);
+	const router = useRouter();
+
+	const gameClear = () => {
+		setIsGameComplete(false);
+		window.location.reload();
 	};
 
 	return (
 		<Modal
 			centered
-			opened={isGameOver}
+			opened={isGameComplete}
 			onClose={() => {}}
 			withCloseButton={false}
 			closeOnClickOutside={false}
 		>
 			<Stack>
 				<Text mb={16}>
-					３回失敗したので残念です、
+					クリアおめでとうございます！
 					<br />
-					ゲームオーバーになりました
 				</Text>
 
-				<Button onClick={gameOver}>最初に戻る</Button>
+				<Button onClick={gameClear}>最初に戻る</Button>
 			</Stack>
 		</Modal>
 	);

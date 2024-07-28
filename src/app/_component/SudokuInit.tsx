@@ -2,10 +2,11 @@
 
 import { generateSudoku, isValid } from "@/util/sudoke";
 import { ActionIcon, Button, Container, Group, Text } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { TbTrash } from "react-icons/tb";
 import { SudokuBoard } from "./SudokuBoard";
 import { GameOverModal } from "./GameOverModal";
+import { GameClearModal } from "./GameClearModal";
 
 export const SudokuInit = () => {
 	const [isStart, setIsStart] = useState<boolean>(false);
@@ -16,7 +17,8 @@ export const SudokuInit = () => {
 	} | null>(null);
 	const [errorCells, setErrorCells] = useState<string[]>([]); // エラーセルの管理
 	const [timeElapsed, setTimeElapsed] = useState<number>(0); // 時間を秒単位で管理
-	const [open, setOpen] = useState(false);
+	const [isGameOver, setGameOver] = useState(false);
+	const [isGameComplete, setIsGameComplete] = useState<boolean>(false); // ゲームクリア状態を管理
 
 	// ここに数独のロジックを書く
 	useEffect(() => {
@@ -34,14 +36,36 @@ export const SudokuInit = () => {
 		return () => clearInterval(timer);
 	}, [isStart]);
 
+	const checkGameWin = useCallback(() => {
+		if (board.length === 0) return false;
+		if (errorCells.length === 3) return false;
+
+		// すべてのセルが埋まっており、エラーがないことを確認
+		for (let row = 0; row < 9; row++) {
+			for (let col = 0; col < 9; col++) {
+				if (board[row][col] === 0 || errorCells.includes(`${row}-${col}`)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}, [board, errorCells]);
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		if (errorCells.length === 3) setOpen(true);
+		if (checkGameWin()) {
+			setIsGameComplete(true);
+		}
+	}, [board, errorCells, checkGameWin]);
+
+	useEffect(() => {
+		if (errorCells.length === 3) setGameOver(true);
 	}, [errorCells]);
 
 	const gameOver = () => {
 		// console.log("ゲームオーバー");
 		setIsStart(false);
-		setOpen(false);
+		setGameOver(false);
 	};
 
 	const handleNumberClick = (number: number) => {
@@ -122,9 +146,13 @@ export const SudokuInit = () => {
 					</Group>
 
 					<GameOverModal
-						open={open}
-						setOpen={setOpen}
+						isGameOver={isGameOver}
+						setGameOver={setGameOver}
 						setIsStart={setIsStart}
+					/>
+					<GameClearModal
+						isGameComplete={isGameComplete}
+						setIsGameComplete={setIsGameComplete}
 					/>
 				</>
 			)}
