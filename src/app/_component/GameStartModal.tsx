@@ -1,6 +1,17 @@
 "use client";
 
-import { Button, Container, Modal, Text, Title } from "@mantine/core";
+import {
+	Button,
+	Container,
+	Flex,
+	Modal,
+	Radio,
+	RadioGroup,
+	Stack,
+	Text,
+	Title,
+} from "@mantine/core";
+import { useState } from "react";
 
 /**
  * ゲーム開始時に表示するモーダル
@@ -11,9 +22,18 @@ import { Button, Container, Modal, Text, Title } from "@mantine/core";
  */
 export const GameStartModal = ({
 	setIsStart,
+	setMode,
 }: {
 	setIsStart: () => void;
+	setMode: (mode: "easy" | "normal" | "hard") => void;
 }) => {
+	const [value, setValue] = useState("easy");
+
+	const handleStart = () => {
+		setIsStart();
+		setMode(value as "easy" | "normal" | "hard");
+	};
+
 	return (
 		<Modal withCloseButton={false} opened={true} onClose={() => {}}>
 			<Container>
@@ -29,11 +49,25 @@ export const GameStartModal = ({
 					すべてのマスを埋めるパズルです。
 				</Text>
 
-				<Button onClick={setIsStart}>ゲームスタート</Button>
+				<RadioGroup
+					value={value}
+					onChange={setValue}
+					label="難易度"
+					required
+					my={24}
+				>
+					<Flex gap={8} my={8}>
+						<Radio label="かんたん" value="easy" />
+						<Radio label="ふつう" value="normal" />
+						<Radio label="むずかしい" value="hard" />
+					</Flex>
+				</RadioGroup>
 
-				<Text c="pink" fw={"bold"} my={16}>
+				<Button onClick={handleStart}>ゲームスタート</Button>
+
+				{/* <Text c="pink" fw={"bold"} my={16}>
 					難易度設定は開発中~
-				</Text>
+				</Text> */}
 			</Container>
 		</Modal>
 	);

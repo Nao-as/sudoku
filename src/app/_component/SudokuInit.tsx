@@ -12,6 +12,7 @@ import { GameProgress } from "./GameProgress";
 
 export const SudokuInit = () => {
 	const [isStart, setIsStart] = useState<boolean>(false);
+	const [mode, setMode] = useState<"easy" | "normal" | "hard">("easy");
 	const [board, setBoard] = useState<number[][]>([]);
 	const [selectedCell, setSelectedCell] = useState<{
 		row: number;
@@ -150,10 +151,14 @@ export const SudokuInit = () => {
 	return (
 		<div className="">
 			{!isStart ? (
-				<GameStartModal setIsStart={() => setIsStart(true)} />
+				<GameStartModal setIsStart={() => setIsStart(true)} setMode={setMode} />
 			) : (
 				<>
-					<GameProgress errorCells={errorCount} timeElapsed={timeElapsed} />
+					<GameProgress
+						mode={mode}
+						errorCells={errorCount}
+						timeElapsed={timeElapsed}
+					/>
 
 					<SudokuBoard
 						board={board}
