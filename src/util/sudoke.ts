@@ -25,7 +25,10 @@ const solveSudoku = (board: number[][]): boolean => {
 	if (!emptyCell) return true;
 	const [row, col] = emptyCell;
 
-	for (let num = 1; num <= 9; num++) {
+	// 1から9までの数字をランダムにシャッフル
+	const numbers = shuffleArray([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+
+	for (const num of numbers) {
 		if (isValid(board, row, col, num)) {
 			board[row][col] = num;
 			if (solveSudoku(board)) return true;
@@ -33,6 +36,19 @@ const solveSudoku = (board: number[][]): boolean => {
 		}
 	}
 	return false;
+};
+
+/**
+ * 配列をランダムにシャッフルします。
+ * @param {number[]} array - シャッフルする配列。
+ * @returns {number[]} シャッフルされた配列。
+ */
+const shuffleArray = (array: number[]): number[] => {
+	for (let i = array.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[array[i], array[j]] = [array[j], array[i]];
+	}
+	return array;
 };
 
 /**
