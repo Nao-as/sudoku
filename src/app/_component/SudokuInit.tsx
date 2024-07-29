@@ -191,7 +191,7 @@ export const SudokuInit = () => {
 								h={{ base: 30, md: 48 }}
 								fz={{ base: "xs", md: "lg" }}
 								p={{ base: "xs", md: "sm" }}
-								c="lime"
+								c={disableNumberCounts.get(number) === 9 ? "gray" : "lime"}
 								fw="bold"
 							>
 								{number}
