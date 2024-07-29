@@ -13,10 +13,12 @@ import { useRouter } from "next/navigation";
  * @returns
  */
 export const GameClearModal = ({
+	mode,
 	timeElapsed,
 	isGameComplete,
 	setIsGameComplete,
 }: {
+	mode: "easy" | "normal" | "hard";
 	timeElapsed: number;
 	isGameComplete: boolean;
 	setIsGameComplete: React.Dispatch<React.SetStateAction<boolean>>;
@@ -38,6 +40,11 @@ export const GameClearModal = ({
 		>
 			<Stack>
 				<Text mb={16}>
+					{mode === "easy"
+						? "かんたん"
+						: mode === "normal"
+							? "ふつう"
+							: "むずかしい"}
 					クリアおめでとう~!(^○^)
 					<br />
 					かかった時間は{timeElapsed}秒です

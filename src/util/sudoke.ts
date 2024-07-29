@@ -100,12 +100,15 @@ const isValid = (
 /**
  * ランダムにセルを削除して数独パズルを作成します。
  * @param {number[][]} board - 完全に埋まった数独盤。
+ * @param {number} attempts - 削除するセルの数。
  */
-const removeCells = (board: number[][]): void => {
+const removeCells = (board: number[][], attempts: number): void => {
 	// const newBoard = board.map((row) => [...row]);
+	const maxAttempts = attempts * 2; // 最大試行回数を設定
+	let newAttempts = attempts;
+	let tries = 0;
 
-	let attempts = 12; // 難易度に応じて調整可能
-	while (attempts > 0) {
+	while (newAttempts > 0 && tries < maxAttempts) {
 		const row = Math.floor(Math.random() * 9);
 		const col = Math.floor(Math.random() * 9);
 		if (board[row][col] !== 0) {
@@ -115,22 +118,13 @@ const removeCells = (board: number[][]): void => {
 			const copy = board.map((row) => [...row]);
 			if (!hasUniqueSolution(copy)) {
 				board[row][col] = backup;
-				attempts--;
+			} else {
+				newAttempts--;
 			}
 		}
+		tries++;
+		// newAttempts--;
 	}
-
-	// let removed = 0;
-	// while (removed < 2) {
-	// 	const row = Math.floor(Math.random() * 9);
-	// 	const col = Math.floor(Math.random() * 9);
-
-	// 	if (newBoard[row][col] !== 0) {
-	// 		newBoard[row][col] = 0;
-	// 		removed++;
-	// 	}
-	// }
-	// return newBoard;
 };
 
 /**
@@ -150,36 +144,39 @@ const hasUniqueSolution = (board: number[][]): boolean => {
  */
 const solveSudokuWithCount = (board: number[][], count: number): number => {
 	const emptyCell = findEmptyCell(board);
-	if (!emptyCell) return count + 1;
+	let newCount = count;
+	if (!emptyCell) return newCount + 1;
 	const [row, col] = emptyCell;
 
 	for (let num = 1; num <= 9; num++) {
 		if (isValid(board, row, col, num)) {
 			board[row][col] = num;
-			count = solveSudokuWithCount(board, count);
+			newCount = solveSudokuWithCount(board, newCount);
 			board[row][col] = 0;
 		}
 	}
-	return count;
+	return newCount;
 };
 
 /**
  * 新しい数独パズルを生成します。
  * @returns {number[][]} 一部のセルが空の生成された数独盤。
  */
-const generateSudoku = (): number[][] => {
+const generateSudoku = (mode: "easy" | "normal" | "hard"): number[][] => {
 	const board = createEmptyBoard();
 	fillBoard(board);
-	removeCells(board);
+
+	let attempts: number;
+	if (mode === "easy") {
+		attempts = 55;
+	} else if (mode === "normal") {
+		attempts = 65;
+	} else {
+		attempts = 75;
+	}
+
+	removeCells(board, attempts);
 	return board;
 };
 
-export {
-	createEmptyBoard,
-	fillBoard,
-	isValid,
-	removeCells,
-	solveSudoku,
-	solveSudokuWithCount,
-	generateSudoku,
-};
+export { isValid, generateSudoku };
