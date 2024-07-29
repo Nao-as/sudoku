@@ -13,13 +13,13 @@ export const GameProgress = ({
 	errorCells,
 	timeElapsed,
 }: {
-	errorCells: string[];
+	errorCells: number;
 	timeElapsed: number;
 }) => {
 	const formatTime = (seconds: number): string => {
 		const minutes = Math.floor(seconds / 60);
-		const secs = seconds % 60;
-		return `${String(minutes).padStart(2)}:${String(secs).padStart(2, "0")}`;
+		const sec = seconds % 60;
+		return `${String(minutes).padStart(2)}:${String(sec).padStart(2, "0")}`;
 	};
 
 	return (
@@ -29,7 +29,7 @@ export const GameProgress = ({
 			my={8}
 			style={{ boxShadow: "0 0 4px #7e7e7e", borderRadius: 4 }}
 		>
-			<Text>ミス数: {errorCells.length}/3</Text>
+			<Text>ミス数: {errorCells}/3</Text>
 			<Text>経過時間:{formatTime(timeElapsed)}秒</Text>
 		</Group>
 	);

@@ -1,7 +1,7 @@
 "use client";
 
 import { generateSudoku, isValid } from "@/util/sudoke";
-import { ActionIcon, Button, Group, Text } from "@mantine/core";
+import { ActionIcon, Button, Group, Text, UnstyledButton } from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 import { TbTrash } from "react-icons/tb";
 import { SudokuBoard } from "./SudokuBoard";
@@ -18,6 +18,7 @@ export const SudokuInit = () => {
 		col: number;
 	} | null>(null);
 	const [errorCells, setErrorCells] = useState<string[]>([]); // エラーセルの管理
+	const [errorCount, setErrorCount] = useState<number>(0); // エラーカウントの状態を追加
 	const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
 	const [timeElapsed, setTimeElapsed] = useState<number>(0); // 時間を秒単位で管理
 	const [isGameOver, setGameOver] = useState(false);
@@ -94,8 +95,8 @@ export const SudokuInit = () => {
 	}, [board, errorCells, checkGameWin]);
 
 	useEffect(() => {
-		if (errorCells.length === 3) setGameOver(true);
-	}, [errorCells]);
+		if (errorCount === 3) setGameOver(true);
+	}, [errorCount]);
 
 	const handleNumberClick = (number: number) => {
 		if (selectedCell) {
@@ -112,11 +113,13 @@ export const SudokuInit = () => {
 					setErrorCells((prev) =>
 						prev.filter((cell) => cell !== `${row}-${col}`),
 					);
+					setErrorCount((prev) => prev - 1); // エラーカウントを減少
 					setSelectedCell(null); // 選択解除
 					calculateNumberCounts(newBoard);
 				} else {
 					setBoard(newBoard);
 					setErrorCells((prev) => [...prev, `${row}-${col}`]);
+					setErrorCount((prev) => prev + 1); // エラーカウントを増加
 					setSelectedCell({ row, col });
 				}
 			}
@@ -133,6 +136,13 @@ export const SudokuInit = () => {
 					),
 				);
 				setBoard(newBoard);
+				// エラーセルの状態を更新して、削除されたセルをエラーリストから除外
+				setErrorCells((prev) =>
+					prev.filter((cell) => cell !== `${row}-${col}`),
+				);
+				// setErrorCount((prev) => prev - 1); // エラーカウントを減少
+				// セルの選択を解除
+				setSelectedCell(null);
 			}
 		}
 	};
@@ -143,7 +153,7 @@ export const SudokuInit = () => {
 				<GameStartModal setIsStart={() => setIsStart(true)} />
 			) : (
 				<>
-					<GameProgress errorCells={errorCells} timeElapsed={timeElapsed} />
+					<GameProgress errorCells={errorCount} timeElapsed={timeElapsed} />
 
 					<SudokuBoard
 						board={board}
@@ -156,29 +166,31 @@ export const SudokuInit = () => {
 					<Group mt={12} justify="center" gap={8}>
 						{/* delete */}
 						<ActionIcon
-							color="gray"
+							variant="light"
 							onClick={() => deleteNumberClick()}
 							w={{ base: 30, md: 48 }}
 							h={{ base: 30, md: 48 }}
 						>
-							<TbTrash />
+							<TbTrash color="gray" />
 						</ActionIcon>
 						{/* TODO:他のボタン機能の追加 */}
 					</Group>
 					<Group mt={12} justify="center" gap={6}>
 						{Array.from({ length: 9 }, (_, i) => i + 1).map((number) => (
-							<Button
+							<UnstyledButton
 								key={number}
 								color="lime"
 								onClick={() => handleNumberClick(number)}
 								disabled={disableNumberCounts.get(number) === 9}
-								w={{ base: 32, md: 48 }}
-								h={{ base: 32, md: 48 }}
+								w={{ base: 30, md: 48 }}
+								h={{ base: 30, md: 48 }}
 								fz={{ base: "xs", md: "lg" }}
 								p={{ base: "xs", md: "sm" }}
+								c="lime"
+								fw="bold"
 							>
 								{number}
-							</Button>
+							</UnstyledButton>
 						))}
 					</Group>
 
