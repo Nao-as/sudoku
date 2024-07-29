@@ -203,6 +203,7 @@ export const SudokuInit = () => {
 					<GameOverModal isGameOver={isGameOver} />
 					{/* ゲームクリアモーダル */}
 					<GameClearModal
+						mode={mode}
 						timeElapsed={timeElapsed}
 						isGameComplete={isGameComplete}
 						setIsGameComplete={setIsGameComplete}
