@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "@mantine/core/styles.css";
 import { createTheme, MantineProvider } from "@mantine/core";
+// global.css
+import "./globals.css";
 
 export const metadata: Metadata = {
 	title: "数独アプリ",

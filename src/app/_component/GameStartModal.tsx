@@ -2,7 +2,6 @@
 
 import {
 	Button,
-	Container,
 	Flex,
 	Modal,
 	Radio,
@@ -34,36 +33,50 @@ export const GameStartModal = ({
 	};
 
 	return (
-		<Modal withCloseButton={false} opened={true} onClose={() => {}}>
-			<Container>
-				<Title fz={{ base: 24, md: "h2" }}>数独アプリ</Title>
+		<Modal.Root opened={true} onClose={() => {}}>
+			<Modal.Overlay />
+			<Modal.Content
+				p={{
+					base: 12,
+					md: 24,
+				}}
+			>
+				<Modal.Body>
+					<Title fz={{ base: 24, md: "h2" }}>数独アプリ</Title>
 
-				<Text my={16}>
-					数独は、1から9までの数字を使って、
-					<br />
-					各行、各列、各3×3のブロックに、
-					<br />
-					それぞれ1から9までの数字を1回ずつだけ入れて、
-					<br />
-					すべてのマスを埋めるパズルです。
-				</Text>
+					<Text my={16}>
+						数独は、1から9までの数字を使って、
+						<br />
+						各行、各列、各3×3のブロックに、
+						<br />
+						それぞれ1から9までの数字を1回ずつだけ入れて、
+						<br className="sp-br" />
+						すべてのマスを埋めるパズルです。
+					</Text>
 
-				<RadioGroup
-					value={value}
-					onChange={setValue}
-					label="難易度"
-					required
-					my={24}
-				>
-					<Flex gap={8} my={8}>
-						<Radio label="かんたん" value="easy" />
-						<Radio label="ふつう" value="normal" />
-						<Radio label="むずかしい" value="hard" />
-					</Flex>
-				</RadioGroup>
+					<RadioGroup
+						value={value}
+						onChange={setValue}
+						label="難易度を選んでね"
+						my={24}
+					>
+						<Flex
+							gap={8}
+							my={8}
+							direction={{
+								base: "column",
+								md: "row",
+							}}
+						>
+							<Radio label="かんたん" value="easy" />
+							<Radio label="ふつう" value="normal" />
+							<Radio label="むずかしい" value="hard" />
+						</Flex>
+					</RadioGroup>
 
-				<Button onClick={handleStart}>ゲームスタート</Button>
-			</Container>
-		</Modal>
+					<Button onClick={handleStart}>ゲームスタート</Button>
+				</Modal.Body>
+			</Modal.Content>
+		</Modal.Root>
 	);
 };
