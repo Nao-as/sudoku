@@ -1,7 +1,7 @@
 "use client";
 
 import { generateSudoku, isValid } from "@/util/sudoke";
-import { ActionIcon, Button, Group, Text, UnstyledButton } from "@mantine/core";
+import { ActionIcon, Group, UnstyledButton } from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 import { TbTrash } from "react-icons/tb";
 import { SudokuBoard } from "./SudokuBoard";
@@ -31,14 +31,14 @@ export const SudokuInit = () => {
 	// ここに数独のロジックを書く
 	useEffect(() => {
 		if (!isStart) return;
-		const generateBoard = generateSudoku();
+		const generateBoard = generateSudoku(mode);
 		setBoard(generateBoard);
 		calculateNumberCounts(generateBoard);
 
 		setSelectedCell(null);
 		setErrorCells([]);
 		setIsTimerRunning(true);
-	}, [isStart]);
+	}, [isStart, mode]);
 
 	const calculateNumberCounts = (board: number[][]) => {
 		const counts = new Map<number, number>();
@@ -114,7 +114,7 @@ export const SudokuInit = () => {
 					setErrorCells((prev) =>
 						prev.filter((cell) => cell !== `${row}-${col}`),
 					);
-					setErrorCount((prev) => prev - 1); // エラーカウントを減少
+					if (errorCount > 0) setErrorCount((prev) => prev - 1); // エラーカウントを減少
 					setSelectedCell(null); // 選択解除
 					calculateNumberCounts(newBoard);
 				} else {

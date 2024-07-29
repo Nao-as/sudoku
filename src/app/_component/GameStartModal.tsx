@@ -7,7 +7,6 @@ import {
 	Modal,
 	Radio,
 	RadioGroup,
-	Stack,
 	Text,
 	Title,
 } from "@mantine/core";
@@ -37,7 +36,7 @@ export const GameStartModal = ({
 	return (
 		<Modal withCloseButton={false} opened={true} onClose={() => {}}>
 			<Container>
-				<Title fz={{ base: 24, md: "h2" }}>まいこの数独アプリ</Title>
+				<Title fz={{ base: 24, md: "h2" }}>数独アプリ</Title>
 
 				<Text my={16}>
 					数独は、1から9までの数字を使って、
@@ -64,10 +63,6 @@ export const GameStartModal = ({
 				</RadioGroup>
 
 				<Button onClick={handleStart}>ゲームスタート</Button>
-
-				{/* <Text c="pink" fw={"bold"} my={16}>
-					難易度設定は開発中~
-				</Text> */}
 			</Container>
 		</Modal>
 	);
