@@ -1,5 +1,6 @@
 "use client";
 
+import { formatTime } from "@/util/util";
 import { Button, Modal, Stack, Text } from "@mantine/core";
 import { useRouter } from "next/navigation";
 
@@ -40,14 +41,10 @@ export const GameClearModal = ({
 		>
 			<Stack>
 				<Text mb={16}>
-					{mode === "easy"
-						? "かんたん"
-						: mode === "normal"
-							? "ふつう"
-							: "むずかしい"}
+					{mode === "easy" ? "かんたん" : mode === "normal" ? "ふつう" : "むずかしい"}
 					クリアおめでとう~!(^○^)
 					<br />
-					かかった時間は{timeElapsed}秒です
+					かかった時間は {formatTime(timeElapsed)} です
 				</Text>
 
 				<Button onClick={gameClear}>最初に戻る</Button>

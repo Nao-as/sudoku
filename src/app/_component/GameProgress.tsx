@@ -1,5 +1,6 @@
 "use client";
 
+import { formatTime } from "@/util/util";
 import { Flex, Group, rem, Text } from "@mantine/core";
 import { TbClock } from "react-icons/tb";
 
@@ -19,12 +20,6 @@ export const GameProgress = ({
 	errorCells: number;
 	timeElapsed: number;
 }) => {
-	const formatTime = (seconds: number): string => {
-		const minutes = Math.floor(seconds / 60);
-		const sec = seconds % 60;
-		return `${String(minutes).padStart(2)}:${String(sec).padStart(2, "0")}`;
-	};
-
 	return (
 		<Group
 			p={8}
@@ -32,13 +27,7 @@ export const GameProgress = ({
 			my={8}
 			style={{ boxShadow: "0 0 4px #7e7e7e", borderRadius: 4 }}
 		>
-			<Text>
-				{mode === "easy"
-					? "かんたん"
-					: mode === "normal"
-						? "ふつう"
-						: "むずかしい"}
-			</Text>
+			<Text>{mode === "easy" ? "かんたん" : mode === "normal" ? "ふつう" : "むずかしい"}</Text>
 			<Group>
 				<Text>ミス数: {errorCells}/3</Text>
 				<Flex align={"center"} gap={4}>
