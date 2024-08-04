@@ -56,7 +56,7 @@ export default function ScorePage() {
 						<Button component={Link} href="/" leftSection={<TbHome2 />}>
 							トップに戻る
 						</Button>
-						<Button component={Link} href="/score/ranking/easy" leftSection={<TbScoreboard />}>
+						<Button component={Link} href="/score/easy" leftSection={<TbScoreboard />}>
 							ランキング
 						</Button>
 					</Flex>

@@ -7,35 +7,32 @@ import { useState } from "react";
 import classes from "./client.module.css";
 import { formatTime } from "@/util/util";
 
+type Score = {
+	id: number;
+	time: number;
+	miss_count: number;
+	created_at: string;
+};
+
 type Props = {
-	value: string;
-	scores: {
-		id: number;
-		level: string;
-		time: number;
-		date: string;
-	}[];
+	mode: string;
+	scores: Score[];
 };
 
 /**
  * スコアボード
  *
- * @param {string} value - 難易度
+ * @param {string} mode - 難易度
  * @param {object[]} scores - スコアのリスト
  * @returns
  */
-export default function ScoreBoard({ value, scores }: Props) {
+export default function ScoreBoard({ mode, scores }: Props) {
 	const [scrolled, setScrolled] = useState(false);
 	const router = useRouter();
 
 	return (
 		<>
-			<Tabs
-				variant="outline"
-				value={value}
-				onChange={(value) => router.push(`/score/ranking/${value}`)}
-				mb={16}
-			>
+			<Tabs variant="outline" value={mode} onChange={(v) => router.push(`/score/${v}`)} mb={16}>
 				<Tabs.List>
 					<Tabs.Tab value="easy" px={30} w={"33%"}>
 						簡単
@@ -43,7 +40,7 @@ export default function ScoreBoard({ value, scores }: Props) {
 					<Tabs.Tab value="normal" px={30} w={"33%"}>
 						ふつう
 					</Tabs.Tab>
-					<Tabs.Tab value="hard" px={30} w={"33%"}>
+					<Tabs.Tab value="difficult" px={30} w={"33%"}>
 						難しい
 					</Tabs.Tab>
 				</Tabs.List>
@@ -53,7 +50,6 @@ export default function ScoreBoard({ value, scores }: Props) {
 				<Table withTableBorder withColumnBorders>
 					<Table.Thead className={cx(classes.header, { [classes.scrolled]: scrolled })}>
 						<Table.Tr>
-							<Table.Td>難易度</Table.Td>
 							<Table.Td>時間</Table.Td>
 							<Table.Td>ミス数</Table.Td>
 							<Table.Td>日付</Table.Td>
@@ -62,12 +58,9 @@ export default function ScoreBoard({ value, scores }: Props) {
 					<Table.Tbody>
 						{scores.map((data) => (
 							<Table.Tr key={data.id}>
-								<Table.Td>
-									{data.level === "easy" ? "簡単" : data.level === "normal" ? "普通" : "難しい"}
-								</Table.Td>
 								<Table.Td>{formatTime(data.time)}</Table.Td>
 								<Table.Td>{0}回</Table.Td>
-								<Table.Td>{data.date}</Table.Td>
+								<Table.Td>{data.created_at}</Table.Td>
 							</Table.Tr>
 						))}
 					</Table.Tbody>
