@@ -24,8 +24,7 @@ export const SudokuInit = () => {
 	const [errorCount, setErrorCount] = useState<number>(0); // エラーカウントの状態を追加
 	const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
 	const [timeElapsed, setTimeElapsed] = useState<number>(0); // 時間を秒単位で管理
-	const [isGameOver, setGameOver] = useState(false);
-	const [isGameComplete, setIsGameComplete] = useState<boolean>(false); // ゲームクリア状態を管理
+	const [status, setStatus] = useState<null | "CLEAR" | "OUT">(null); // ゲーム状態を管理
 	const [disableNumberCounts, setDisableNumberCounts] = useState<Map<number, number>>(new Map()); // 数字の使用回数を管理
 
 	// ここに数独のロジックを書く
@@ -97,7 +96,7 @@ export const SudokuInit = () => {
 				mode: mode,
 			});
 
-			setIsGameComplete(true);
+			setStatus("CLEAR");
 			setIsTimerRunning(false); // タイマーを停止
 		}
 	}, [board, errorCells, checkGameWin]);
@@ -112,7 +111,7 @@ export const SudokuInit = () => {
 				mode: mode,
 			});
 
-			setGameOver(true);
+			setStatus("OUT");
 		}
 	}, [errorCount]);
 
@@ -150,7 +149,6 @@ export const SudokuInit = () => {
 				setBoard(newBoard);
 				// エラーセルの状態を更新して、削除されたセルをエラーリストから除外
 				setErrorCells((prev) => prev.filter((cell) => cell !== `${row}-${col}`));
-				// setErrorCount((prev) => prev - 1); // エラーカウントを減少
 				// セルの選択を解除
 				setSelectedCell(null);
 			}
@@ -158,20 +156,20 @@ export const SudokuInit = () => {
 	};
 
 	return (
-		<div className="">
+		<>
 			{!isStart ? (
 				<GameStartModal setIsStart={() => setIsStart(true)} setMode={setMode} />
 			) : (
 				<>
+					{/* 進行状況 */}
 					<GameProgress mode={mode} errorCells={errorCount} timeElapsed={timeElapsed} />
-
+					{/* 盤面 */}
 					<SudokuBoard
 						board={board}
 						selectedCell={selectedCell}
 						errorCells={errorCells}
 						setSelectedCell={setSelectedCell}
 					/>
-
 					{/* 操作ボタン */}
 					<Group mt={12} justify="center" gap={8}>
 						{/* delete */}
@@ -203,18 +201,12 @@ export const SudokuInit = () => {
 							</UnstyledButton>
 						))}
 					</Group>
-
-					{/* ゲームオーバーモーダル */}
-					<GameOverModal isGameOver={isGameOver} />
 					{/* ゲームクリアモーダル */}
-					<GameClearModal
-						mode={mode}
-						timeElapsed={timeElapsed}
-						isGameComplete={isGameComplete}
-						setIsGameComplete={setIsGameComplete}
-					/>
+					<GameClearModal mode={mode} timeElapsed={timeElapsed} status={status === "CLEAR"} />
+					{/* ゲームオーバーモーダル */}
+					<GameOverModal status={status === "OUT"} />
 				</>
 			)}
-		</div>
+		</>
 	);
 };

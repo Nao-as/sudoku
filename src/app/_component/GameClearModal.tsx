@@ -17,25 +17,18 @@ import { useRouter } from "next/navigation";
 export const GameClearModal = ({
 	mode,
 	timeElapsed,
-	isGameComplete,
-	setIsGameComplete,
+	status,
 }: {
 	mode: GameMode;
 	timeElapsed: number;
-	isGameComplete: boolean;
-	setIsGameComplete: React.Dispatch<React.SetStateAction<boolean>>;
+	status: boolean;
 }) => {
-	const router = useRouter();
-
-	const gameClear = () => {
-		setIsGameComplete(false);
-		window.location.reload();
-	};
+	const gameClear = () => window.location.reload();
 
 	return (
 		<Modal
 			centered
-			opened={isGameComplete}
+			opened={status}
 			onClose={() => {}}
 			withCloseButton={false}
 			closeOnClickOutside={false}
