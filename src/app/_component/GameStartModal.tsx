@@ -1,5 +1,6 @@
 "use client";
 
+import type { GameMode } from "@/types/game";
 import { Button, Divider, Flex, Modal, Radio, RadioGroup, Text, Title } from "@mantine/core";
 import Link from "next/link";
 import { useState } from "react";
@@ -16,13 +17,13 @@ export const GameStartModal = ({
 	setMode,
 }: {
 	setIsStart: () => void;
-	setMode: (mode: "easy" | "normal" | "hard") => void;
+	setMode: (mode: GameMode) => void;
 }) => {
 	const [value, setValue] = useState("easy");
 
 	const handleStart = () => {
 		setIsStart();
-		setMode(value as "easy" | "normal" | "hard");
+		setMode(value as GameMode);
 	};
 
 	return (

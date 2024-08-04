@@ -34,7 +34,7 @@ export default function ScoreBoard({ mode, scores }: Props) {
 					<Tabs.Tab value="normal" px={30} w={"33%"}>
 						ふつう
 					</Tabs.Tab>
-					<Tabs.Tab value="difficult" px={30} w={"33%"}>
+					<Tabs.Tab value="hard" px={30} w={"33%"}>
 						難しい
 					</Tabs.Tab>
 				</Tabs.List>

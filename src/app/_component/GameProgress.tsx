@@ -1,5 +1,6 @@
 "use client";
 
+import type { GameMode } from "@/types/game";
 import { formatTime } from "@/util/util";
 import { Flex, Group, rem, Text } from "@mantine/core";
 import { TbClock } from "react-icons/tb";
@@ -16,7 +17,7 @@ export const GameProgress = ({
 	errorCells,
 	timeElapsed,
 }: {
-	mode: "easy" | "normal" | "hard";
+	mode: GameMode;
 	errorCells: number;
 	timeElapsed: number;
 }) => {

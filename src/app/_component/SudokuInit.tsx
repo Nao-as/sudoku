@@ -9,10 +9,11 @@ import { GameOverModal } from "./GameOverModal";
 import { GameClearModal } from "./GameClearModal";
 import { GameStartModal } from "./GameStartModal";
 import { GameProgress } from "./GameProgress";
+import type { GameMode } from "@/types/game";
 
 export const SudokuInit = () => {
 	const [isStart, setIsStart] = useState<boolean>(false);
-	const [mode, setMode] = useState<"easy" | "normal" | "hard">("easy");
+	const [mode, setMode] = useState<GameMode>("easy");
 	const [board, setBoard] = useState<number[][]>([]);
 	const [selectedCell, setSelectedCell] = useState<{
 		row: number;
@@ -24,9 +25,7 @@ export const SudokuInit = () => {
 	const [timeElapsed, setTimeElapsed] = useState<number>(0); // 時間を秒単位で管理
 	const [isGameOver, setGameOver] = useState(false);
 	const [isGameComplete, setIsGameComplete] = useState<boolean>(false); // ゲームクリア状態を管理
-	const [disableNumberCounts, setDisableNumberCounts] = useState<
-		Map<number, number>
-	>(new Map()); // 数字の使用回数を管理
+	const [disableNumberCounts, setDisableNumberCounts] = useState<Map<number, number>>(new Map()); // 数字の使用回数を管理
 
 	// ここに数独のロジックを書く
 	useEffect(() => {
@@ -104,16 +103,12 @@ export const SudokuInit = () => {
 			const { row, col } = selectedCell;
 			if (board[row][col] === 0) {
 				const newBoard = board.map((rowArr, rowIndex) =>
-					rowArr.map((cell, colIndex) =>
-						rowIndex === row && colIndex === col ? number : cell,
-					),
+					rowArr.map((cell, colIndex) => (rowIndex === row && colIndex === col ? number : cell)),
 				);
 
 				if (isValid(board, row, col, number)) {
 					setBoard(newBoard);
-					setErrorCells((prev) =>
-						prev.filter((cell) => cell !== `${row}-${col}`),
-					);
+					setErrorCells((prev) => prev.filter((cell) => cell !== `${row}-${col}`));
 					if (errorCount > 0) setErrorCount((prev) => prev - 1); // エラーカウントを減少
 					setSelectedCell(null); // 選択解除
 					calculateNumberCounts(newBoard);
@@ -132,15 +127,11 @@ export const SudokuInit = () => {
 			const { row, col } = selectedCell;
 			if (board[row][col] !== 0) {
 				const newBoard = board.map((rowArr, rowIndex) =>
-					rowArr.map((cell, colIndex) =>
-						rowIndex === row && colIndex === col ? 0 : cell,
-					),
+					rowArr.map((cell, colIndex) => (rowIndex === row && colIndex === col ? 0 : cell)),
 				);
 				setBoard(newBoard);
 				// エラーセルの状態を更新して、削除されたセルをエラーリストから除外
-				setErrorCells((prev) =>
-					prev.filter((cell) => cell !== `${row}-${col}`),
-				);
+				setErrorCells((prev) => prev.filter((cell) => cell !== `${row}-${col}`));
 				// setErrorCount((prev) => prev - 1); // エラーカウントを減少
 				// セルの選択を解除
 				setSelectedCell(null);
@@ -154,11 +145,7 @@ export const SudokuInit = () => {
 				<GameStartModal setIsStart={() => setIsStart(true)} setMode={setMode} />
 			) : (
 				<>
-					<GameProgress
-						mode={mode}
-						errorCells={errorCount}
-						timeElapsed={timeElapsed}
-					/>
+					<GameProgress mode={mode} errorCells={errorCount} timeElapsed={timeElapsed} />
 
 					<SudokuBoard
 						board={board}

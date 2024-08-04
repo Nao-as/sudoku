@@ -1,4 +1,4 @@
-export type GameMode = "easy" | "normal" | "difficult";
+export type GameMode = "easy" | "normal" | "hard";
 
 export type GameScore = {
 	id: number;

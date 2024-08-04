@@ -1,3 +1,5 @@
+import type { GameMode } from "@/types/game";
+
 /**
  * 空の9x9数独盤を作成します。
  * @returns {number[][]} ゼロで埋められた9x9の配列。
@@ -73,12 +75,7 @@ const findEmptyCell = (board: number[][]): [number, number] | null => {
  * @param {number} num - セルに配置する数字。
  * @returns {boolean} 数字を配置できる場合はtrue、それ以外はfalse。
  */
-const isValid = (
-	board: number[][],
-	row: number,
-	col: number,
-	num: number,
-): boolean => {
+const isValid = (board: number[][], row: number, col: number, num: number): boolean => {
 	// 行のチェック
 	if (board[row].includes(num)) return false;
 	// 列のチェック
@@ -162,7 +159,7 @@ const solveSudokuWithCount = (board: number[][], count: number): number => {
  * 新しい数独パズルを生成します。
  * @returns {number[][]} 一部のセルが空の生成された数独盤。
  */
-const generateSudoku = (mode: "easy" | "normal" | "hard"): number[][] => {
+const generateSudoku = (mode: GameMode): number[][] => {
 	const board = createEmptyBoard();
 	fillBoard(board);
 

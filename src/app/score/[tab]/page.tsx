@@ -3,10 +3,9 @@ import ScoreBoard from "./client";
 import Link from "next/link";
 import { TbArrowBackUp } from "react-icons/tb";
 import { getTotalScores } from "@/util/supabase/score";
+import type { GameMode } from "@/types/game";
 
-export default async function ScorePage({
-	params,
-}: { params: { tab: "easy" | "normal" | "difficult" } }) {
+export default async function ScorePage({ params }: { params: { tab: GameMode } }) {
 	//認証機能を追加する際には、このページを認証済みのユーザーのみがアクセスできるようにする
 
 	const scoreList = await getTotalScores(params.tab);

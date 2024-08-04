@@ -1,5 +1,6 @@
 "use client";
 
+import type { GameMode } from "@/types/game";
 import { formatTime } from "@/util/util";
 import { Button, Modal, Stack, Text } from "@mantine/core";
 import { useRouter } from "next/navigation";
@@ -19,7 +20,7 @@ export const GameClearModal = ({
 	isGameComplete,
 	setIsGameComplete,
 }: {
-	mode: "easy" | "normal" | "hard";
+	mode: GameMode;
 	timeElapsed: number;
 	isGameComplete: boolean;
 	setIsGameComplete: React.Dispatch<React.SetStateAction<boolean>>;

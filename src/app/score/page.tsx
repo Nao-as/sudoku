@@ -43,7 +43,7 @@ export default async function ScorePage() {
 						<TabsTab px={30} w={"33%"} value="normal">
 							ふつう
 						</TabsTab>
-						<TabsTab px={30} w={"33%"} value="difficult">
+						<TabsTab px={30} w={"33%"} value="hard">
 							難しい
 						</TabsTab>
 					</TabsList>
