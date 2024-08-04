@@ -5,9 +5,10 @@ import { TbArrowBackUp } from "react-icons/tb";
 import { getTotalScores } from "@/util/supabase/score";
 import type { GameMode } from "@/types/game";
 
-export default async function ScorePage({ params }: { params: { tab: GameMode } }) {
-	//認証機能を追加する際には、このページを認証済みのユーザーのみがアクセスできるようにする
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
 
+export default async function ScorePage({ params }: { params: { tab: GameMode } }) {
 	const scoreList = await getTotalScores(params.tab);
 
 	return (

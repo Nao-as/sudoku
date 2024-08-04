@@ -16,7 +16,9 @@ import {
 import Link from "next/link";
 import { TbHome2, TbScoreboard } from "react-icons/tb";
 
-// TODO:スコアの表示
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
 export default async function ScorePage() {
 	const scores = await getModeToal();
 
