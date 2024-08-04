@@ -10,6 +10,7 @@ import { GameClearModal } from "./GameClearModal";
 import { GameStartModal } from "./GameStartModal";
 import { GameProgress } from "./GameProgress";
 import type { GameMode } from "@/types/game";
+import { gameComplete } from "../_action";
 
 export const SudokuInit = () => {
 	const [isStart, setIsStart] = useState<boolean>(false);
@@ -89,13 +90,30 @@ export const SudokuInit = () => {
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		if (checkGameWin()) {
+			// ゲームオーバー処理
+			gameComplete({
+				time: timeElapsed,
+				missCount: errorCount,
+				mode: mode,
+			});
+
 			setIsGameComplete(true);
 			setIsTimerRunning(false); // タイマーを停止
 		}
 	}, [board, errorCells, checkGameWin]);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		if (errorCount === 3) setGameOver(true);
+		if (errorCount === 3) {
+			// ゲームオーバー処理
+			gameComplete({
+				time: timeElapsed,
+				missCount: errorCount,
+				mode: mode,
+			});
+
+			setGameOver(true);
+		}
 	}, [errorCount]);
 
 	const handleNumberClick = (number: number) => {

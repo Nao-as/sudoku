@@ -165,7 +165,7 @@ const generateSudoku = (mode: GameMode): number[][] => {
 
 	let attempts: number;
 	if (mode === "easy") {
-		attempts = 55;
+		attempts = 45;
 	} else if (mode === "normal") {
 		attempts = 65;
 	} else {
