@@ -1,3 +1,4 @@
+import { getModeToal } from "@/util/supabase/score";
 import { formatTime } from "@/util/util";
 import {
 	Button,
@@ -15,37 +16,9 @@ import {
 import Link from "next/link";
 import { TbHome2, TbScoreboard } from "react-icons/tb";
 
-const dscores = [
-	{
-		level: "easy",
-		count: 12,
-		averageTime: 500,
-		maxTime: 1200,
-		minTime: 300,
-		date: "2021-01-01",
-	},
-	{
-		level: "normal",
-		count: 20,
-		averageTime: 500,
-		maxTime: 1100,
-		minTime: 300,
-		date: "2021-01-01",
-	},
-
-	{
-		level: "difficult",
-		count: 12,
-		averageTime: 712,
-		maxTime: 1700,
-		minTime: 300,
-		date: "2021-01-01",
-	},
-];
-
 // TODO:スコアの表示
-export default function ScorePage() {
-	const scores = dscores;
+export default async function ScorePage() {
+	const scores = await getModeToal();
 
 	return (
 		<Container size={"sm"} my={20}>
@@ -76,11 +49,11 @@ export default function ScorePage() {
 					</TabsList>
 
 					{scores.map((score) => (
-						<TabsPanel value={score.level} key={score.level}>
+						<TabsPanel value={score.mode} key={score.mode}>
 							<Paper p="md" shadow="xs" mb={12}>
 								<Group>
 									<Text fw={"bold"}>ゲーム回数</Text>
-									<Text>{score.count}回</Text>
+									<Text>{score.gameCount}回</Text>
 								</Group>
 							</Paper>
 							<Paper p="md" shadow="xs" mb={12}>

@@ -6,17 +6,11 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import classes from "./client.module.css";
 import { formatTime } from "@/util/util";
-
-type Score = {
-	id: number;
-	time: number;
-	miss_count: number;
-	created_at: string;
-};
+import type { GameMode, GameScore } from "@/types/game";
 
 type Props = {
-	mode: string;
-	scores: Score[];
+	mode: GameMode;
+	scores: GameScore[];
 };
 
 /**
