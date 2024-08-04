@@ -1,5 +1,5 @@
+import { formatTime } from "@/util/util";
 import {
-	ActionIcon,
 	Button,
 	Container,
 	Flex,
@@ -15,20 +15,37 @@ import {
 import Link from "next/link";
 import { TbHome2, TbScoreboard } from "react-icons/tb";
 
-// TODO:難易度設定
-// TODO:認証機能の追加
-// TODO:スコアの保存
+const dscores = [
+	{
+		level: "easy",
+		count: 12,
+		averageTime: 500,
+		maxTime: 1200,
+		minTime: 300,
+		date: "2021-01-01",
+	},
+	{
+		level: "normal",
+		count: 20,
+		averageTime: 500,
+		maxTime: 1100,
+		minTime: 300,
+		date: "2021-01-01",
+	},
+
+	{
+		level: "difficult",
+		count: 12,
+		averageTime: 712,
+		maxTime: 1700,
+		minTime: 300,
+		date: "2021-01-01",
+	},
+];
+
 // TODO:スコアの表示
-//	- ランキング機能(自分のスコアがランキングに表示される)
-
-const score = {
-	level: "easy",
-	time: "00:00:00",
-	date: "2021-01-01",
-};
-
 export default function ScorePage() {
-	//認証機能を追加する際には、このページを認証済みのユーザーのみがアクセスできるようにする
+	const scores = dscores;
 
 	return (
 		<Container size={"sm"} my={20}>
@@ -45,85 +62,47 @@ export default function ScorePage() {
 					</Flex>
 				</Group>
 
-				<Tabs defaultValue="chat" variant="outline">
+				<Tabs defaultValue="easy" variant="outline">
 					<TabsList mb={16} justify="space-around">
-						<TabsTab px={30} w={"33%"} value="chat">
+						<TabsTab px={30} w={"33%"} value="easy">
 							簡単
 						</TabsTab>
-						<TabsTab px={30} w={"33%"} value="gallery">
+						<TabsTab px={30} w={"33%"} value="normal">
 							ふつう
 						</TabsTab>
-						<TabsTab px={30} w={"33%"} value="account">
+						<TabsTab px={30} w={"33%"} value="difficult">
 							難しい
 						</TabsTab>
 					</TabsList>
 
-					<TabsPanel value="chat" pb="xs">
-						<Paper p="md" shadow="xs" mb={12}>
-							<Group>
-								<Text>ゲーム回数</Text>
-								<Text>{score.date}回</Text>
-							</Group>
-						</Paper>
-						<Paper p="md" shadow="xs" mb={12}>
-							<Group>
-								<Text>最短時間</Text>
-								<Text>{score.date}</Text>
-							</Group>
-						</Paper>
-						<Paper p="md" shadow="xs" mb={12}>
-							<Group>
-								<Text>平均時間</Text>
-								<Text>{score.time}</Text>
-							</Group>
-						</Paper>
-						<Paper p="md" shadow="xs" mb={12}>
-							<Group>
-								<Text>最大時間</Text>
-								<Text>{score.time}</Text>
-							</Group>
-						</Paper>
-					</TabsPanel>
-					<TabsPanel value="gallery" pb="xs">
-						<Paper p="md" shadow="xs" mb={12}>
-							<Group>
-								<Text>最短時間</Text>
-								<Text>{score.date}</Text>
-							</Group>
-						</Paper>
-						<Paper p="md" shadow="xs" mb={12}>
-							<Group>
-								<Text>平均時間</Text>
-								<Text>{score.time}</Text>
-							</Group>
-						</Paper>
-						<Paper p="md" shadow="xs" mb={12}>
-							<Group>
-								<Text>最大時間</Text>
-								<Text>{score.time}</Text>
-							</Group>
-						</Paper>
-					</TabsPanel>
-					<TabsPanel value="account" pb="xs">
-						<Paper p="md" shadow="xs" mb={12}>
-							<Group>
-								<Text>最短時間</Text>
-								<Text>{score.date}</Text>
-							</Group>
-						</Paper>
-						<Paper p="md" shadow="xs" mb={12}>
-							<Group>
-								<Text>平均時間</Text>
-								<Text>{score.time}</Text>
-							</Group>
-						</Paper>
-						<Paper p="md" shadow="xs" mb={12}>
-							<Group>
-								<Text>最大時間</Text>
-								<Text>{score.time}</Text>
-							</Group>
-						</Paper>
-					</TabsPanel>
+					{scores.map((score) => (
+						<TabsPanel value={score.level} key={score.level}>
+							<Paper p="md" shadow="xs" mb={12}>
+								<Group>
+									<Text fw={"bold"}>ゲーム回数</Text>
+									<Text>{score.count}回</Text>
+								</Group>
+							</Paper>
+							<Paper p="md" shadow="xs" mb={12}>
+								<Group>
+									<Text fw={"bold"}>平均時間</Text>
+									<Text>{formatTime(score.averageTime)}</Text>
+								</Group>
+							</Paper>
+							<Paper p="md" shadow="xs" mb={12}>
+								<Group>
+									<Text fw={"bold"}>最短時間</Text>
+									<Text>{formatTime(score.minTime)}</Text>
+								</Group>
+							</Paper>
+							<Paper p="md" shadow="xs" mb={12}>
+								<Group>
+									<Text fw={"bold"}>最大時間</Text>
+									<Text>{formatTime(score.maxTime)}</Text>
+								</Group>
+							</Paper>
+						</TabsPanel>
+					))}
 				</Tabs>
 			</Paper>
 		</Container>

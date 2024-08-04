@@ -3,12 +3,7 @@ import ScoreBoard from "./client";
 import Link from "next/link";
 import { TbArrowBackUp } from "react-icons/tb";
 
-// TODO:認証機能の追加
-// TODO:スコアの保存
-// TODO:スコアの表示
-//	- ランキング機能(自分のスコアがランキングに表示される)
-
-const scoreList = [
+const dscoreList = [
 	{
 		id: 1,
 		level: "easy",
@@ -71,8 +66,10 @@ const scoreList = [
 	},
 ];
 
+// TODO: ランキング機能(自分のスコアがランキングに表示される)
 export default function ScorePage({ params }: { params: { tab: string } }) {
 	//認証機能を追加する際には、このページを認証済みのユーザーのみがアクセスできるようにする
+	const scoreList = dscoreList;
 
 	return (
 		<Container size={"sm"} my={20}>

@@ -45,7 +45,12 @@ export const GameStartModal = ({
 						<br className="sp-br" />
 						すべてのマスを埋めるパズルです。
 					</Text>
-					<RadioGroup value={value} onChange={setValue} label="難易度を選んでね" my={24}>
+					<RadioGroup
+						value={value}
+						onChange={setValue}
+						label="難易度を選んでボタンをクリック"
+						my={24}
+					>
 						<Flex
 							gap={8}
 							my={8}
