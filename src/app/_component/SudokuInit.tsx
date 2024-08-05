@@ -1,7 +1,7 @@
 "use client";
 
 import { generateSudoku, isValid } from "@/util/sudoke";
-import { ActionIcon, Group, UnstyledButton } from "@mantine/core";
+import { ActionIcon, Group, LoadingOverlay, UnstyledButton } from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 import { TbTrash } from "react-icons/tb";
 import { SudokuBoard } from "./SudokuBoard";
@@ -9,24 +9,24 @@ import { GameOverModal } from "./GameOverModal";
 import { GameClearModal } from "./GameClearModal";
 import { GameStartModal } from "./GameStartModal";
 import { GameProgress } from "./GameProgress";
+import type { GameMode } from "@/types/game";
+import { gameComplete } from "../_action";
 
 export const SudokuInit = () => {
 	const [isStart, setIsStart] = useState<boolean>(false);
-	const [mode, setMode] = useState<"easy" | "normal" | "hard">("easy");
+	const [mode, setMode] = useState<GameMode>("easy");
 	const [board, setBoard] = useState<number[][]>([]);
 	const [selectedCell, setSelectedCell] = useState<{
 		row: number;
 		col: number;
 	} | null>(null);
 	const [errorCells, setErrorCells] = useState<string[]>([]); // エラーセルの管理
-	const [errorCount, setErrorCount] = useState<number>(0); // エラーカウントの状態を追加
+	const [errorCount, setErrorCount] = useState<number>(0); // エラーカウント数を管理
 	const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
-	const [timeElapsed, setTimeElapsed] = useState<number>(0); // 時間を秒単位で管理
-	const [isGameOver, setGameOver] = useState(false);
-	const [isGameComplete, setIsGameComplete] = useState<boolean>(false); // ゲームクリア状態を管理
-	const [disableNumberCounts, setDisableNumberCounts] = useState<
-		Map<number, number>
-	>(new Map()); // 数字の使用回数を管理
+	const [timeElapsed, setTimeElapsed] = useState<number>(0); // ゲーム時間を秒単位で管理
+	const [status, setStatus] = useState<null | "CLEAR" | "OUT">(null); // ゲーム状態を管理
+	const [disableNumberCounts, setDisableNumberCounts] = useState<Map<number, number>>(new Map()); // 数字の使用回数を管理
+	const [visible, setVisible] = useState(false);
 
 	// ここに数独のロジックを書く
 	useEffect(() => {
@@ -46,9 +46,7 @@ export const SudokuInit = () => {
 		board.forEach((row) => {
 			// biome-ignore lint/complexity/noForEach: <explanation>
 			row.forEach((num) => {
-				if (num !== 0) {
-					counts.set(num, (counts.get(num) || 0) + 1);
-				}
+				if (num !== 0) counts.set(num, (counts.get(num) || 0) + 1);
 			});
 		});
 
@@ -89,32 +87,40 @@ export const SudokuInit = () => {
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		if (checkGameWin()) {
-			setIsGameComplete(true);
-			setIsTimerRunning(false); // タイマーを停止
-		}
-	}, [board, errorCells, checkGameWin]);
+		const handleGameComplete = async () => {
+			setVisible(true);
+			const ss = await gameComplete({
+				time: timeElapsed,
+				missCount: errorCount,
+				mode: mode,
+			});
 
-	useEffect(() => {
-		if (errorCount === 3) setGameOver(true);
-	}, [errorCount]);
+			setVisible(false);
+
+			if (ss) {
+				setIsTimerRunning(false); // タイマーを停止
+				if (errorCount !== 3) {
+					setStatus("CLEAR");
+				} else {
+					setStatus("OUT");
+				}
+			}
+		};
+
+		if (checkGameWin() || errorCount === 3) handleGameComplete();
+	}, [errorCount, checkGameWin]);
 
 	const handleNumberClick = (number: number) => {
 		if (selectedCell) {
 			const { row, col } = selectedCell;
 			if (board[row][col] === 0) {
 				const newBoard = board.map((rowArr, rowIndex) =>
-					rowArr.map((cell, colIndex) =>
-						rowIndex === row && colIndex === col ? number : cell,
-					),
+					rowArr.map((cell, colIndex) => (rowIndex === row && colIndex === col ? number : cell)),
 				);
 
 				if (isValid(board, row, col, number)) {
 					setBoard(newBoard);
-					setErrorCells((prev) =>
-						prev.filter((cell) => cell !== `${row}-${col}`),
-					);
-					if (errorCount > 0) setErrorCount((prev) => prev - 1); // エラーカウントを減少
+					setErrorCells((prev) => prev.filter((cell) => cell !== `${row}-${col}`));
 					setSelectedCell(null); // 選択解除
 					calculateNumberCounts(newBoard);
 				} else {
@@ -132,16 +138,11 @@ export const SudokuInit = () => {
 			const { row, col } = selectedCell;
 			if (board[row][col] !== 0) {
 				const newBoard = board.map((rowArr, rowIndex) =>
-					rowArr.map((cell, colIndex) =>
-						rowIndex === row && colIndex === col ? 0 : cell,
-					),
+					rowArr.map((cell, colIndex) => (rowIndex === row && colIndex === col ? 0 : cell)),
 				);
 				setBoard(newBoard);
 				// エラーセルの状態を更新して、削除されたセルをエラーリストから除外
-				setErrorCells((prev) =>
-					prev.filter((cell) => cell !== `${row}-${col}`),
-				);
-				// setErrorCount((prev) => prev - 1); // エラーカウントを減少
+				setErrorCells((prev) => prev.filter((cell) => cell !== `${row}-${col}`));
 				// セルの選択を解除
 				setSelectedCell(null);
 			}
@@ -149,24 +150,22 @@ export const SudokuInit = () => {
 	};
 
 	return (
-		<div className="">
+		<>
 			{!isStart ? (
-				<GameStartModal setIsStart={() => setIsStart(true)} setMode={setMode} />
-			) : (
 				<>
-					<GameProgress
-						mode={mode}
-						errorCells={errorCount}
-						timeElapsed={timeElapsed}
-					/>
-
+					<GameStartModal setIsStart={() => setIsStart(true)} setMode={setMode} />
+				</>
+			) : (
+				<div style={{ position: "relative" }}>
+					{/* 進行状況 */}
+					<GameProgress mode={mode} errorCells={errorCount} timeElapsed={timeElapsed} />
+					{/* 盤面 */}
 					<SudokuBoard
 						board={board}
 						selectedCell={selectedCell}
 						errorCells={errorCells}
 						setSelectedCell={setSelectedCell}
 					/>
-
 					{/* 操作ボタン */}
 					<Group mt={12} justify="center" gap={8}>
 						{/* delete */}
@@ -198,18 +197,18 @@ export const SudokuInit = () => {
 							</UnstyledButton>
 						))}
 					</Group>
-
-					{/* ゲームオーバーモーダル */}
-					<GameOverModal isGameOver={isGameOver} />
 					{/* ゲームクリアモーダル */}
-					<GameClearModal
-						mode={mode}
-						timeElapsed={timeElapsed}
-						isGameComplete={isGameComplete}
-						setIsGameComplete={setIsGameComplete}
+					<GameClearModal mode={mode} timeElapsed={timeElapsed} status={status === "CLEAR"} />
+					{/* ゲームオーバーモーダル */}
+					<GameOverModal status={status === "OUT"} />
+					{/* データ送信中の表示 */}
+					<LoadingOverlay
+						visible={visible}
+						overlayProps={{ radius: "sm", blur: 2 }}
+						loaderProps={{ color: "green", type: "bars" }}
 					/>
-				</>
+				</div>
 			)}
-		</div>
+		</>
 	);
 };

@@ -1,14 +1,8 @@
 "use client";
 
-import {
-	Button,
-	Flex,
-	Modal,
-	Radio,
-	RadioGroup,
-	Text,
-	Title,
-} from "@mantine/core";
+import type { GameMode } from "@/types/game";
+import { Button, Divider, Flex, Modal, Radio, RadioGroup, Text, Title } from "@mantine/core";
+import Link from "next/link";
 import { useState } from "react";
 
 /**
@@ -23,13 +17,13 @@ export const GameStartModal = ({
 	setMode,
 }: {
 	setIsStart: () => void;
-	setMode: (mode: "easy" | "normal" | "hard") => void;
+	setMode: (mode: GameMode) => void;
 }) => {
 	const [value, setValue] = useState("easy");
 
 	const handleStart = () => {
 		setIsStart();
-		setMode(value as "easy" | "normal" | "hard");
+		setMode(value as GameMode);
 	};
 
 	return (
@@ -43,7 +37,6 @@ export const GameStartModal = ({
 			>
 				<Modal.Body>
 					<Title fz={{ base: 24, md: "h2" }}>数独アプリ</Title>
-
 					<Text my={16}>
 						数独は、1から9までの数字を使って、
 						<br />
@@ -53,11 +46,10 @@ export const GameStartModal = ({
 						<br className="sp-br" />
 						すべてのマスを埋めるパズルです。
 					</Text>
-
 					<RadioGroup
 						value={value}
 						onChange={setValue}
-						label="難易度を選んでね"
+						label="難易度を選んでボタンをクリック"
 						my={24}
 					>
 						<Flex
@@ -74,7 +66,13 @@ export const GameStartModal = ({
 						</Flex>
 					</RadioGroup>
 
-					<Button onClick={handleStart}>ゲームスタート</Button>
+					<Button onClick={handleStart} w="100%">
+						ゲームスタート
+					</Button>
+					<Divider my={16} />
+					<Button component={Link} href="/score" w="100%">
+						スコアはこっち
+					</Button>
 				</Modal.Body>
 			</Modal.Content>
 		</Modal.Root>

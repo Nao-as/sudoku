@@ -12,27 +12,23 @@ import { Button, Modal, Stack, Text } from "@mantine/core";
  * @returns
  */
 export const GameOverModal = ({
-	isGameOver,
+	status,
 }: {
-	isGameOver: boolean;
+	status: boolean;
 }) => {
-	// TODO:ゲームオーバー時にDBにスコアを保存する処理を追加
-
-	const gameOver = () => {
-		window.location.reload();
-	};
+	const gameOver = () => window.location.reload();
 
 	return (
 		<Modal
 			centered
-			opened={isGameOver}
+			opened={status}
 			onClose={() => {}}
 			withCloseButton={false}
 			closeOnClickOutside={false}
 		>
 			<Stack>
 				<Text mb={16}>
-					３回失敗したので残念だけど、
+					残念ですが、３回失敗したので
 					<br />
 					ゲームオーバーになりました
 				</Text>

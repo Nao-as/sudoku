@@ -1,5 +1,7 @@
 "use client";
 
+import type { GameMode } from "@/types/game";
+import { formatTime } from "@/util/util";
 import { Button, Modal, Stack, Text } from "@mantine/core";
 import { useRouter } from "next/navigation";
 
@@ -15,39 +17,28 @@ import { useRouter } from "next/navigation";
 export const GameClearModal = ({
 	mode,
 	timeElapsed,
-	isGameComplete,
-	setIsGameComplete,
+	status,
 }: {
-	mode: "easy" | "normal" | "hard";
+	mode: GameMode;
 	timeElapsed: number;
-	isGameComplete: boolean;
-	setIsGameComplete: React.Dispatch<React.SetStateAction<boolean>>;
+	status: boolean;
 }) => {
-	const router = useRouter();
-
-	const gameClear = () => {
-		setIsGameComplete(false);
-		window.location.reload();
-	};
+	const gameClear = () => window.location.reload();
 
 	return (
 		<Modal
 			centered
-			opened={isGameComplete}
+			opened={status}
 			onClose={() => {}}
 			withCloseButton={false}
 			closeOnClickOutside={false}
 		>
 			<Stack>
 				<Text mb={16}>
-					{mode === "easy"
-						? "かんたん"
-						: mode === "normal"
-							? "ふつう"
-							: "むずかしい"}
+					{mode === "easy" ? "かんたん" : mode === "normal" ? "ふつう" : "むずかしい"}
 					クリアおめでとう~!(^○^)
 					<br />
-					かかった時間は{timeElapsed}秒です
+					かかった時間は {formatTime(timeElapsed)} です
 				</Text>
 
 				<Button onClick={gameClear}>最初に戻る</Button>

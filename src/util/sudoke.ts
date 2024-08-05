@@ -1,3 +1,5 @@
+import type { GameMode } from "@/types/game";
+
 /**
  * 空の9x9数独盤を作成します。
  * @returns {number[][]} ゼロで埋められた9x9の配列。
@@ -73,12 +75,7 @@ const findEmptyCell = (board: number[][]): [number, number] | null => {
  * @param {number} num - セルに配置する数字。
  * @returns {boolean} 数字を配置できる場合はtrue、それ以外はfalse。
  */
-const isValid = (
-	board: number[][],
-	row: number,
-	col: number,
-	num: number,
-): boolean => {
+const isValid = (board: number[][], row: number, col: number, num: number): boolean => {
 	// 行のチェック
 	if (board[row].includes(num)) return false;
 	// 列のチェック
@@ -103,12 +100,11 @@ const isValid = (
  * @param {number} attempts - 削除するセルの数。
  */
 const removeCells = (board: number[][], attempts: number): void => {
-	// const newBoard = board.map((row) => [...row]);
 	const maxAttempts = attempts * 2; // 最大試行回数を設定
-	let newAttempts = attempts;
+	let removedCells = 0;
 	let tries = 0;
 
-	while (newAttempts > 0 && tries < maxAttempts) {
+	while (removedCells < attempts && tries < maxAttempts) {
 		const row = Math.floor(Math.random() * 9);
 		const col = Math.floor(Math.random() * 9);
 		if (board[row][col] !== 0) {
@@ -116,14 +112,13 @@ const removeCells = (board: number[][], attempts: number): void => {
 			board[row][col] = 0;
 
 			const copy = board.map((row) => [...row]);
-			if (!hasUniqueSolution(copy)) {
-				board[row][col] = backup;
+			if (hasUniqueSolution(copy)) {
+				removedCells++;
 			} else {
-				newAttempts--;
+				board[row][col] = backup;
 			}
 		}
 		tries++;
-		// newAttempts--;
 	}
 };
 
@@ -133,7 +128,8 @@ const removeCells = (board: number[][], attempts: number): void => {
  * @returns {boolean} 一意の解がある場合はtrue、それ以外はfalse。
  */
 const hasUniqueSolution = (board: number[][]): boolean => {
-	return solveSudokuWithCount(board, 0) === 1;
+	const solutions = solveSudokuWithCount(board, 0);
+	return solutions === 1;
 };
 
 /**
@@ -152,6 +148,7 @@ const solveSudokuWithCount = (board: number[][], count: number): number => {
 		if (isValid(board, row, col, num)) {
 			board[row][col] = num;
 			newCount = solveSudokuWithCount(board, newCount);
+			if (newCount > 1) return newCount; // 解が2つ以上見つかったら即座に返す
 			board[row][col] = 0;
 		}
 	}
@@ -162,13 +159,13 @@ const solveSudokuWithCount = (board: number[][], count: number): number => {
  * 新しい数独パズルを生成します。
  * @returns {number[][]} 一部のセルが空の生成された数独盤。
  */
-const generateSudoku = (mode: "easy" | "normal" | "hard"): number[][] => {
+const generateSudoku = (mode: GameMode): number[][] => {
 	const board = createEmptyBoard();
 	fillBoard(board);
 
 	let attempts: number;
 	if (mode === "easy") {
-		attempts = 55;
+		attempts = 45;
 	} else if (mode === "normal") {
 		attempts = 65;
 	} else {
