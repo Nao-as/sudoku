@@ -21,9 +21,9 @@ export const SudokuInit = () => {
 		col: number;
 	} | null>(null);
 	const [errorCells, setErrorCells] = useState<string[]>([]); // エラーセルの管理
-	const [errorCount, setErrorCount] = useState<number>(0); // エラーカウントの状態を追加
+	const [errorCount, setErrorCount] = useState<number>(0); // エラーカウント数を管理
 	const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
-	const [timeElapsed, setTimeElapsed] = useState<number>(0); // 時間を秒単位で管理
+	const [timeElapsed, setTimeElapsed] = useState<number>(0); // ゲーム時間を秒単位で管理
 	const [status, setStatus] = useState<null | "CLEAR" | "OUT">(null); // ゲーム状態を管理
 	const [disableNumberCounts, setDisableNumberCounts] = useState<Map<number, number>>(new Map()); // 数字の使用回数を管理
 
@@ -45,9 +45,7 @@ export const SudokuInit = () => {
 		board.forEach((row) => {
 			// biome-ignore lint/complexity/noForEach: <explanation>
 			row.forEach((num) => {
-				if (num !== 0) {
-					counts.set(num, (counts.get(num) || 0) + 1);
-				}
+				if (num !== 0) counts.set(num, (counts.get(num) || 0) + 1);
 			});
 		});
 
@@ -88,32 +86,25 @@ export const SudokuInit = () => {
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
-		if (checkGameWin()) {
-			// ゲームオーバー処理
-			gameComplete({
+		const handleGameComplete = async () => {
+			const ss = await gameComplete({
 				time: timeElapsed,
 				missCount: errorCount,
 				mode: mode,
 			});
 
-			setStatus("CLEAR");
-			setIsTimerRunning(false); // タイマーを停止
-		}
-	}, [board, errorCells, checkGameWin]);
+			if (ss) {
+				setIsTimerRunning(false); // タイマーを停止
+				if (errorCount !== 3) {
+					setStatus("CLEAR");
+				} else {
+					setStatus("OUT");
+				}
+			}
+		};
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-	useEffect(() => {
-		if (errorCount === 3) {
-			// ゲームオーバー処理
-			gameComplete({
-				time: timeElapsed,
-				missCount: errorCount,
-				mode: mode,
-			});
-
-			setStatus("OUT");
-		}
-	}, [errorCount]);
+		if (checkGameWin() || errorCount === 3) handleGameComplete();
+	}, [errorCount, checkGameWin]);
 
 	const handleNumberClick = (number: number) => {
 		if (selectedCell) {
@@ -158,7 +149,9 @@ export const SudokuInit = () => {
 	return (
 		<>
 			{!isStart ? (
-				<GameStartModal setIsStart={() => setIsStart(true)} setMode={setMode} />
+				<>
+					<GameStartModal setIsStart={() => setIsStart(true)} setMode={setMode} />
+				</>
 			) : (
 				<>
 					{/* 進行状況 */}

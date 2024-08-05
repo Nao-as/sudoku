@@ -1,25 +1,31 @@
 "use server";
 
-import type { GameMode } from "@/types/game";
-// import { createScore, createTotalScore, getCalcrateScore } from "@/util/supabase/score";
+import type { registerGameScore } from "@/types/game";
+import { createScore, createTotalScore, getCalcrateScore } from "@/util/supabase/score";
 
-type s = {
-	time: number;
-	missCount: number;
-	mode: GameMode;
-};
+/** ゲームクリア,ゲームオーバー時に実行 */
+export const gameComplete = async (data: registerGameScore): Promise<"ok" | "error"> => {
+	// userIdは仮で1を設定
+	const userId = 1;
 
-/** ゲームクリア,ゲームオーバー時に実行*/
-export const gameComplete = async (data: s) => {
-	// // ゲーム結果を登録
-	// const cs = createScore(data);
+	// まずゲーム結果を登録
+	const cs = await createScore({ ...data, userId });
 
-	// // 対象難易度を集計
-	// const cdd = getCalcrateScore(data.mode);
+	if (!cs) return "error";
 
-	// // 集計スコアを登録
-	// const csss = createTotalScore(cdd);
-	console.log("hello", data);
+	// 対象難易度を集計
+	const averageScore = await getCalcrateScore(data.mode, userId);
+
+	if (!averageScore) return "error";
+
+	// 統計スコアを登録
+	const totalScore = await createTotalScore({
+		userId: userId,
+		mode: data.mode,
+		scores: averageScore,
+	});
+
+	if (!totalScore) return "error";
 
 	return "ok";
 };

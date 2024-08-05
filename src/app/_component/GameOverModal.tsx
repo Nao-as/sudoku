@@ -16,11 +16,7 @@ export const GameOverModal = ({
 }: {
 	status: boolean;
 }) => {
-	// TODO:ゲームオーバー時にDBにスコアを保存する処理を追加
-
-	const gameOver = () => {
-		window.location.reload();
-	};
+	const gameOver = () => window.location.reload();
 
 	return (
 		<Modal
