@@ -5,7 +5,7 @@ import { ScrollArea, Table, Tabs } from "@mantine/core";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import classes from "./client.module.css";
-import { formatTime } from "@/util/util";
+import { formatDateTime, formatTime } from "@/util/util";
 import type { GameMode, GameScore } from "@/types/game";
 
 type Props = {
@@ -54,7 +54,7 @@ export default function ScoreBoard({ mode, scores }: Props) {
 							<Table.Tr key={data.id}>
 								<Table.Td>{formatTime(data.time)}</Table.Td>
 								<Table.Td>{0}回</Table.Td>
-								<Table.Td>{data.created_at}</Table.Td>
+								<Table.Td>{formatDateTime(data.created_at)}</Table.Td>
 							</Table.Tr>
 						))}
 					</Table.Tbody>
