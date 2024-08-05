@@ -1,7 +1,7 @@
 "use client";
 
 import { generateSudoku, isValid } from "@/util/sudoke";
-import { ActionIcon, Group, UnstyledButton } from "@mantine/core";
+import { ActionIcon, Group, LoadingOverlay, UnstyledButton } from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 import { TbTrash } from "react-icons/tb";
 import { SudokuBoard } from "./SudokuBoard";
@@ -26,6 +26,7 @@ export const SudokuInit = () => {
 	const [timeElapsed, setTimeElapsed] = useState<number>(0); // ゲーム時間を秒単位で管理
 	const [status, setStatus] = useState<null | "CLEAR" | "OUT">(null); // ゲーム状態を管理
 	const [disableNumberCounts, setDisableNumberCounts] = useState<Map<number, number>>(new Map()); // 数字の使用回数を管理
+	const [visible, setVisible] = useState(false);
 
 	// ここに数独のロジックを書く
 	useEffect(() => {
@@ -87,11 +88,14 @@ export const SudokuInit = () => {
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		const handleGameComplete = async () => {
+			setVisible(true);
 			const ss = await gameComplete({
 				time: timeElapsed,
 				missCount: errorCount,
 				mode: mode,
 			});
+
+			setVisible(false);
 
 			if (ss) {
 				setIsTimerRunning(false); // タイマーを停止
@@ -153,7 +157,7 @@ export const SudokuInit = () => {
 					<GameStartModal setIsStart={() => setIsStart(true)} setMode={setMode} />
 				</>
 			) : (
-				<>
+				<div style={{ position: "relative" }}>
 					{/* 進行状況 */}
 					<GameProgress mode={mode} errorCells={errorCount} timeElapsed={timeElapsed} />
 					{/* 盤面 */}
@@ -198,7 +202,12 @@ export const SudokuInit = () => {
 					<GameClearModal mode={mode} timeElapsed={timeElapsed} status={status === "CLEAR"} />
 					{/* ゲームオーバーモーダル */}
 					<GameOverModal status={status === "OUT"} />
-				</>
+					<LoadingOverlay
+						visible={visible}
+						overlayProps={{ radius: "sm", blur: 2 }}
+						loaderProps={{ color: "green", type: "bars" }}
+					/>
+				</div>
 			)}
 		</>
 	);
