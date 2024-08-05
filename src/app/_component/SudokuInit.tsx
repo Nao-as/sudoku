@@ -121,7 +121,6 @@ export const SudokuInit = () => {
 				if (isValid(board, row, col, number)) {
 					setBoard(newBoard);
 					setErrorCells((prev) => prev.filter((cell) => cell !== `${row}-${col}`));
-					if (errorCount > 0) setErrorCount((prev) => prev - 1); // エラーカウントを減少
 					setSelectedCell(null); // 選択解除
 					calculateNumberCounts(newBoard);
 				} else {
@@ -202,6 +201,7 @@ export const SudokuInit = () => {
 					<GameClearModal mode={mode} timeElapsed={timeElapsed} status={status === "CLEAR"} />
 					{/* ゲームオーバーモーダル */}
 					<GameOverModal status={status === "OUT"} />
+					{/* データ送信中の表示 */}
 					<LoadingOverlay
 						visible={visible}
 						overlayProps={{ radius: "sm", blur: 2 }}

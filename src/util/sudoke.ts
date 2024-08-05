@@ -100,12 +100,11 @@ const isValid = (board: number[][], row: number, col: number, num: number): bool
  * @param {number} attempts - 削除するセルの数。
  */
 const removeCells = (board: number[][], attempts: number): void => {
-	// const newBoard = board.map((row) => [...row]);
 	const maxAttempts = attempts * 2; // 最大試行回数を設定
-	let newAttempts = attempts;
+	let removedCells = 0;
 	let tries = 0;
 
-	while (newAttempts > 0 && tries < maxAttempts) {
+	while (removedCells < attempts && tries < maxAttempts) {
 		const row = Math.floor(Math.random() * 9);
 		const col = Math.floor(Math.random() * 9);
 		if (board[row][col] !== 0) {
@@ -113,14 +112,13 @@ const removeCells = (board: number[][], attempts: number): void => {
 			board[row][col] = 0;
 
 			const copy = board.map((row) => [...row]);
-			if (!hasUniqueSolution(copy)) {
-				board[row][col] = backup;
+			if (hasUniqueSolution(copy)) {
+				removedCells++;
 			} else {
-				newAttempts--;
+				board[row][col] = backup;
 			}
 		}
 		tries++;
-		// newAttempts--;
 	}
 };
 
@@ -130,7 +128,8 @@ const removeCells = (board: number[][], attempts: number): void => {
  * @returns {boolean} 一意の解がある場合はtrue、それ以外はfalse。
  */
 const hasUniqueSolution = (board: number[][]): boolean => {
-	return solveSudokuWithCount(board, 0) === 1;
+	const solutions = solveSudokuWithCount(board, 0);
+	return solutions === 1;
 };
 
 /**
@@ -149,6 +148,7 @@ const solveSudokuWithCount = (board: number[][], count: number): number => {
 		if (isValid(board, row, col, num)) {
 			board[row][col] = num;
 			newCount = solveSudokuWithCount(board, newCount);
+			if (newCount > 1) return newCount; // 解が2つ以上見つかったら即座に返す
 			board[row][col] = 0;
 		}
 	}
