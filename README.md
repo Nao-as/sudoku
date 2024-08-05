@@ -36,3 +36,44 @@ pnpm dev
 Next.jsアプリをデプロイする最も簡単な方法は、Next.jsの作成者が提供する [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) を使用することです。
 
 詳細については、[Next.js deployment documentation](https://nextjs.org/docs/deployment) を参照してください。
+
+
+
+
+
+参考
+- https://supabase.com/docs/reference/javascript/select
+- https://qiita.com/kabochapo/items/26b1bb753116a6904664
+- https://qiita.com/ryuta_yoshida/items/c57547b1a0d57427c858
+
+
+```
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = 'https://**********.supabase.co'
+const supabaseKey = process.env.SUPABASE_KEY
+const supabase = createClient(supabaseUrl, supabaseKey)
+
+```
+CREATE OR REPLACE FUNCTION get_aggregates(key_value TEXT)
+RETURNS TABLE (
+  total_count INTEGER,
+  average_value NUMERIC,
+  max_value NUMERIC,
+  min_value NUMERIC
+) AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    COUNT(*) AS total_count,
+    AVG(your_column) AS average_value,
+    MAX(your_column) AS max_value,
+    MIN(your_column) AS min_value
+  FROM
+    your_table
+  WHERE
+    some_key = key_value;
+END;
+$$ LANGUAGE plpgsql;
+```
+
