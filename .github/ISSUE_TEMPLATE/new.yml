@@ -1,0 +1,35 @@
+name: Feature Request
+description: このプロジェクトの新機能を提案する
+title: ''
+labels: ['enhancement']
+assignees: 
+  - ''
+body:
+  - type: markdown
+    attributes:
+      value: |
+        新機能の提案をしていただきありがとうございます！
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: 新機能の説明
+      description: 提案する新機能について詳しく教えてください。
+      placeholder: 新機能の詳細を記入してください。
+    validations:
+      required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: 動機
+      description: なぜこの機能が必要だと思いますか？
+      placeholder: この機能がどのように役立つかを説明してください。
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 代替案
+      description: 他に検討した代替案があれば教えてください。
+      placeholder: 他に考えた方法があれば記入してください。
+    validations:
+      required: false

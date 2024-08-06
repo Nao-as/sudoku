@@ -1,31 +1,40 @@
-"use server";
+'use server'
 
-import type { registerGameScore } from "@/types/game";
-import { createScore, createTotalScore, getCalcrateScore } from "@/util/supabase/score";
+import type { registerGameScore } from '@/types/game'
+import {
+  createScore,
+  createTotalScore,
+  getCalcrateScore,
+} from '@/util/supabase/score'
 
 /** ゲームクリア,ゲームオーバー時に実行 */
-export const gameComplete = async (data: registerGameScore): Promise<"ok" | "error"> => {
-	// userIdは仮で1を設定
-	const userId = 1;
+export const gameComplete = async (
+  data: registerGameScore,
+): Promise<'ok' | 'error'> => {
+  // 開発環境の場合は何もしない
+  if (process.env.NODE_ENV !== 'production') return 'ok'
 
-	// まずゲーム結果を登録
-	const cs = await createScore({ ...data, userId });
+  // userIdは仮で1を設定
+  const userId = 1
 
-	if (!cs) return "error";
+  // まずゲーム結果を登録
+  const cs = await createScore({ ...data, userId })
 
-	// 対象難易度を集計
-	const averageScore = await getCalcrateScore(data.mode, userId);
+  if (!cs) return 'error'
 
-	if (!averageScore) return "error";
+  // 対象難易度を集計
+  const averageScore = await getCalcrateScore(data.mode, userId)
 
-	// 統計スコアを登録
-	const totalScore = await createTotalScore({
-		userId: userId,
-		mode: data.mode,
-		scores: averageScore,
-	});
+  if (!averageScore) return 'error'
 
-	if (!totalScore) return "error";
+  // 統計スコアを登録
+  const totalScore = await createTotalScore({
+    userId: userId,
+    mode: data.mode,
+    scores: averageScore,
+  })
 
-	return "ok";
-};
+  if (!totalScore) return 'error'
+
+  return 'ok'
+}

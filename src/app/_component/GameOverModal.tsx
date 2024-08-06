@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { Button, Modal, Stack, Text } from "@mantine/core";
+import { Button, Modal, Stack, Text } from '@mantine/core'
 
 /**
  * ゲームオーバー時に表示するモーダル
@@ -12,29 +12,29 @@ import { Button, Modal, Stack, Text } from "@mantine/core";
  * @returns
  */
 export const GameOverModal = ({
-	status,
+  status,
 }: {
-	status: boolean;
+  status: boolean
 }) => {
-	const gameOver = () => window.location.reload();
+  const gameOver = () => window.location.reload()
 
-	return (
-		<Modal
-			centered
-			opened={status}
-			onClose={() => {}}
-			withCloseButton={false}
-			closeOnClickOutside={false}
-		>
-			<Stack>
-				<Text mb={16}>
-					残念ですが、３回失敗したので
-					<br />
-					ゲームオーバーになりました
-				</Text>
+  return (
+    <Modal
+      centered
+      opened={status}
+      onClose={() => {}}
+      withCloseButton={false}
+      closeOnClickOutside={false}
+    >
+      <Stack>
+        <Text mb={16}>
+          残念ですが、３回失敗したので
+          <br />
+          ゲームオーバーになりました
+        </Text>
 
-				<Button onClick={gameOver}>最初に戻る</Button>
-			</Stack>
-		</Modal>
-	);
-};
+        <Button onClick={gameOver}>最初に戻る</Button>
+      </Stack>
+    </Modal>
+  )
+}
