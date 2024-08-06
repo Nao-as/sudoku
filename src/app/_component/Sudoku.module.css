@@ -1,13 +1,53 @@
-.col {
+.cell {
   border: 1px solid #6f6f6f;
   text-align: center;
   width: 40px;
   height: 40px;
+  cursor: pointer,
 }
 
 @media screen and (min-width: 600px) {
-  .col {
+  .cell {
     width: 40px;
     height: 60px;
   }
+}
+
+.thickLeft {
+  border-left-width: 3px;
+}
+
+.thickTop {
+  border-top-width: 3px;
+}
+
+.thickRight {
+  border-right-width: 3px;
+}
+
+.thickBottom {
+  border-bottom-width: 3px;
+}
+
+.selected {
+  background-color: #7cc8ff;
+  font-weight: bold;
+}
+
+.sameNumber {
+  background-color: #7cc8ff;
+  font-weight: bold;
+}
+
+.sameRowCol {
+  background-color: #b9e2fd;
+}
+
+.adjacentRow {
+  background-color: #b9e2fd;
+}
+
+.errorCell {
+  color: red;
+  background-color: #f9d2d2 !important;
 }

@@ -1,8 +1,9 @@
 'use client'
 
 import { Flex, Paper, Table } from '@mantine/core'
-import { useCallback } from 'react'
+import { useState } from 'react'
 import styles from './Sudoku.module.css'
+import { clsx } from 'clsx'
 
 type Props = {
   board: number[][]
@@ -30,51 +31,44 @@ export const SudokuBoard = ({
   setSelectedCell,
   selectedCell,
 }: Props) => {
+  const [selectedNumber, setSelectedNumber] = useState<number | null>(null)
   // 空のセルのみ選択可能
-  const handleCellClick = (row: number, col: number) => {
-    if (board[row][col] === 0 || errorCells.includes(`${row}-${col}`)) {
-      // 空のセルまたはエラーセルのみ選択可能
-      setSelectedCell({ row, col })
-    }
+  const handleCellClick = (row: number, col: number, cell: number | null) => {
+    setSelectedCell({ row, col })
+    setSelectedNumber(cell)
   }
 
-  const getCellStyle = useCallback(
-    (rowIndex: number, colIndex: number): React.CSSProperties => {
-      const baseStyle: React.CSSProperties = {}
+  const getCellClassName = (
+    cell: number | null, // 数字またはnull
+    rowIndex: number,
+    colIndex: number,
+  ) => {
+    const isSelected =
+      selectedCell &&
+      selectedCell.row === rowIndex &&
+      selectedCell.col === colIndex
+    const isSameNumber = selectedNumber && cell && selectedNumber === cell
+    const isInSameRowOrCol =
+      selectedCell &&
+      (selectedCell.row === rowIndex || selectedCell.col === colIndex)
+    const isInAdjacentRow =
+      selectedCell &&
+      (selectedCell.row - 1 === rowIndex ||
+        selectedCell.row + 1 === rowIndex) &&
+      selectedCell.col === colIndex
 
-      const thickBorderStyle = {
-        borderLeftWidth: colIndex % 3 === 0 ? '3px' : '1px',
-        borderTopWidth: rowIndex % 3 === 0 ? '3px' : '1px',
-        borderRightWidth: colIndex === 8 ? '3px' : '1px',
-        borderBottomWidth: rowIndex === 8 ? '3px' : '1px',
-      }
-
-      if (
-        selectedCell &&
-        selectedCell.row === rowIndex &&
-        selectedCell.col === colIndex
-      ) {
-        baseStyle.backgroundColor = 'lightblue' // 選択されたセルのハイライト
-      }
-
-      // 空のセルにカーソルスタイルを設定
-      if (
-        board[rowIndex][colIndex] === 0 ||
-        errorCells.includes(`${rowIndex}-${colIndex}`)
-      ) {
-        baseStyle.cursor = 'pointer'
-      }
-
-      // エラーセルの文字色
-      if (errorCells.includes(`${rowIndex}-${colIndex}`)) {
-        baseStyle.color = 'red'
-        baseStyle.backgroundColor = '#f9d2d2'
-      }
-
-      return { ...baseStyle, ...thickBorderStyle }
-    },
-    [board, errorCells, selectedCell],
-  )
+    return clsx(styles.cell, {
+      [styles.selected]: isSelected,
+      [styles.sameNumber]: isSameNumber && !isSelected, // isSelectedが優先されるため、選択されたセルには適用しない
+      [styles.sameRowCol]: isInSameRowOrCol && !isSelected, // isSelectedが優先されるため、選択されたセルには適用しない
+      [styles.adjacentRow]: isInAdjacentRow && !isSelected, // isSelectedが優先されるため、選択されたセルには適用しない
+      [styles.errorCell]: errorCells.includes(`${rowIndex}-${colIndex}`),
+      [styles.thickLeft]: colIndex % 3 === 0,
+      [styles.thickTop]: rowIndex % 3 === 0,
+      [styles.thickRight]: colIndex === 8,
+      [styles.thickBottom]: rowIndex === 8,
+    })
+  }
 
   return (
     <Paper
@@ -88,18 +82,19 @@ export const SudokuBoard = ({
             {board.map((row, rowIndex) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
               <Table.Tr key={rowIndex}>
-                {row.map((cell, idx) => (
-                  <Table.Td
-                    p={2}
-                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                    key={idx}
-                    style={getCellStyle(rowIndex, idx)}
-                    className={styles.col}
-                    onClick={() => handleCellClick(rowIndex, idx)}
-                  >
-                    {cell !== 0 ? cell : ''}
-                  </Table.Td>
-                ))}
+                {row.map((cell, colIndex) => {
+                  return (
+                    <Table.Td
+                      p={2}
+                      // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                      key={colIndex}
+                      className={getCellClassName(cell, rowIndex, colIndex)}
+                      onClick={() => handleCellClick(rowIndex, colIndex, cell)}
+                    >
+                      {cell !== 0 ? cell : ''}
+                    </Table.Td>
+                  )
+                })}
               </Table.Tr>
             ))}
           </Table.Tbody>
