@@ -11,6 +11,9 @@ import {
 export const gameComplete = async (
   data: registerGameScore,
 ): Promise<'ok' | 'error'> => {
+  // 開発環境の場合は何もしない
+  if (process.env.NODE_ENV !== 'production') return 'ok'
+
   // userIdは仮で1を設定
   const userId = 1
 

@@ -16,6 +16,7 @@ import { GameStartModal } from './GameStartModal'
 import { GameProgress } from './GameProgress'
 import type { GameMode } from '@/types/game'
 import { gameComplete } from '../_action'
+import useTimer from '@/hooks/useTimer'
 
 export const SudokuInit = () => {
   const [isStart, setIsStart] = useState<boolean>(false)
@@ -28,12 +29,12 @@ export const SudokuInit = () => {
   const [errorCells, setErrorCells] = useState<string[]>([]) // エラーセルの管理
   const [errorCount, setErrorCount] = useState<number>(0) // エラーカウント数を管理
   const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false)
-  const [timeElapsed, setTimeElapsed] = useState<number>(0) // ゲーム時間を秒単位で管理
   const [status, setStatus] = useState<null | 'CLEAR' | 'OUT'>(null) // ゲーム状態を管理
   const [disableNumberCounts, setDisableNumberCounts] = useState<
     Map<number, number>
   >(new Map()) // 数字の使用回数を管理
   const [visible, setVisible] = useState(false)
+  const timeElapsed = useTimer(isTimerRunning) // カスタムフックを使用
 
   // ここに数独のロジックを書く
   useEffect(() => {
@@ -59,23 +60,6 @@ export const SudokuInit = () => {
 
     setDisableNumberCounts(counts)
   }
-
-  useEffect(() => {
-    let timerId: NodeJS.Timeout | null = null
-
-    if (isTimerRunning) {
-      timerId = setInterval(() => {
-        setTimeElapsed(prev => prev + 1)
-      }, 1000)
-    } else if (!isTimerRunning && timeElapsed !== 0) {
-      // biome-ignore lint/style/noNonNullAssertion: <explanation>
-      clearInterval(timerId!)
-    }
-
-    return () => {
-      if (timerId) clearInterval(timerId)
-    }
-  }, [isTimerRunning, timeElapsed])
 
   const checkGameWin = useCallback(() => {
     if (board.length === 0) return false
