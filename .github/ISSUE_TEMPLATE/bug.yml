@@ -1,0 +1,36 @@
+name: バグレポート
+description: バグレポートを提出する
+title: ''
+labels: [ ]
+assignees:
+  - ''
+body:
+  - type: markdown
+    attributes:
+      value: |
+        バグレポートを記入していただきありがとうございます！
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 何が起こりましたか？
+      description: また、何が起こることを期待していましたか？
+      placeholder: 見たことを教えてください！
+      value: "バグが発生しました！"
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: 問題が発生しているブラウザは何ですか？
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+  - type: textarea
+    id: logs
+    attributes:
+      label: 関連するログ出力
+      description: 関連するログ出力をコピー＆ペーストしてください.
+      render: shell
