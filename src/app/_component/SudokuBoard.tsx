@@ -1,7 +1,8 @@
 'use client'
 
-import { Paper, Table } from '@mantine/core'
+import { Flex, Paper, Table } from '@mantine/core'
 import { useCallback } from 'react'
+import styles from './Sudoku.module.css'
 
 type Props = {
   board: number[][]
@@ -39,9 +40,7 @@ export const SudokuBoard = ({
 
   const getCellStyle = useCallback(
     (rowIndex: number, colIndex: number): React.CSSProperties => {
-      const baseStyle: React.CSSProperties = {
-        border: '1px solid #6f6f6f',
-      }
+      const baseStyle: React.CSSProperties = {}
 
       const thickBorderStyle = {
         borderLeftWidth: colIndex % 3 === 0 ? '3px' : '1px',
@@ -83,29 +82,29 @@ export const SudokuBoard = ({
       mt={8}
       style={{ boxShadow: '0 0 4px #7e7e7e', borderRadius: 4 }}
     >
-      <Table tabIndex={0}>
-        <Table.Tbody>
-          {board.map((row, rowIndex) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-            <Table.Tr key={rowIndex}>
-              {row.map((cell, colIndex) => (
-                <Table.Td
-                  p={2}
-                  // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                  key={colIndex}
-                  w={{ base: 40, md: 60 }}
-                  h={{ base: 40, md: 60 }}
-                  ta={'center'}
-                  style={getCellStyle(rowIndex, colIndex)}
-                  onClick={() => handleCellClick(rowIndex, colIndex)}
-                >
-                  {cell !== 0 ? cell : ''}
-                </Table.Td>
-              ))}
-            </Table.Tr>
-          ))}
-        </Table.Tbody>
-      </Table>
+      <Flex justify={'center'}>
+        <Table tabIndex={0}>
+          <Table.Tbody>
+            {board.map((row, rowIndex) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+              <Table.Tr key={rowIndex}>
+                {row.map((cell, idx) => (
+                  <Table.Td
+                    p={2}
+                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                    key={idx}
+                    style={getCellStyle(rowIndex, idx)}
+                    className={styles.col}
+                    onClick={() => handleCellClick(rowIndex, idx)}
+                  >
+                    {cell !== 0 ? cell : ''}
+                  </Table.Td>
+                ))}
+              </Table.Tr>
+            ))}
+          </Table.Tbody>
+        </Table>
+      </Flex>
     </Paper>
   )
 }
