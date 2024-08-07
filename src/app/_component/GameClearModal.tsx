@@ -1,9 +1,9 @@
 'use client'
 
 import type { GameMode } from '@/types/game'
+import { clearMessages } from '@/util/message'
 import { formatTime } from '@/util/util'
 import { Button, Modal, Stack, Text } from '@mantine/core'
-import { useRouter } from 'next/navigation'
 
 /**
  * ゲームクリア時に表示するモーダル
@@ -25,6 +25,9 @@ export const GameClearModal = ({
 }) => {
   const gameClear = () => window.location.reload()
 
+  const message =
+    clearMessages[mode][Math.floor(Math.random() * clearMessages[mode].length)]
+
   return (
     <Modal
       centered
@@ -34,16 +37,16 @@ export const GameClearModal = ({
       closeOnClickOutside={false}
     >
       <Stack>
-        <Text mb={16}>
+        <Text mb={8}>
           {mode === 'easy'
             ? 'かんたん'
             : mode === 'normal'
               ? 'ふつう'
               : 'むずかしい'}
           クリアおめでとう~!(^○^)
-          <br />
-          かかった時間は {formatTime(timeElapsed)} です
         </Text>
+        <Text mb={8}>{message}</Text>
+        <Text mb={8}>クリアまでの時間は {formatTime(timeElapsed)} です</Text>
 
         <Button onClick={gameClear}>最初に戻る</Button>
       </Stack>

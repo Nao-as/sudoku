@@ -4,18 +4,15 @@ import type { GameMode } from '@/types/game'
  * 空の9x9数独盤を作成します。
  * @returns {number[][]} ゼロで埋められた9x9の配列。
  */
-const createEmptyBoard = (): number[][] => {
-  return Array.from({ length: 9 }, () => Array(9).fill(0))
-}
+const createEmptyBoard = (): number[][] =>
+  Array.from({ length: 9 }, () => Array(9).fill(0))
 
 /**
  * バックトラッキングを使用して数独盤を完全に埋めます。
  * @param {number[][]} board - 埋めるための数独盤。
  * @returns {boolean} 盤が成功裏に埋められた場合はtrue、それ以外はfalse。
  */
-const fillBoard = (board: number[][]): boolean => {
-  return solveSudoku(board)
-}
+const fillBoard = (board: number[][]): boolean => solveSudoku(board)
 
 /**
  * 与えられた数独盤をバックトラッキングを使用して解きます。
