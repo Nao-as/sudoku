@@ -45,20 +45,29 @@ export const GameStartModal = ({
         }}
       >
         <Modal.Body>
-          <Title fz={{ base: 24, md: 'h2' }}>数独アプリ</Title>
+          <Title ta='center'>
+            <Text
+              size='3xl'
+              fw={900}
+              variant='gradient'
+              gradient={{ from: 'blue', to: 'green', deg: 90 }}
+            >
+              NaoDoku.com
+            </Text>
+          </Title>
           <Text my={16}>
-            数独は、1から9までの数字を使って、
+            1から9までの数字を使って、
             <br />
             各行、各列、各3×3のブロックに、
             <br />
             それぞれ1から9までの数字を1回ずつだけ入れて、
             <br className='sp-br' />
-            すべてのマスを埋めるパズルです。
+            すべてのマスを埋めるパズル、つまり数独です。
           </Text>
           <RadioGroup
             value={value}
             onChange={setValue}
-            label='難易度を選んでボタンをクリック'
+            label='難易度を選んでゲームを開始しましょう'
             my={24}
           >
             <Flex
@@ -75,11 +84,22 @@ export const GameStartModal = ({
             </Flex>
           </RadioGroup>
 
-          <Button onClick={handleStart} w='100%'>
+          <Button
+            onClick={handleStart}
+            w='100%'
+            variant='gradient'
+            gradient={{ from: 'blue', to: 'cyan', deg: 160 }}
+          >
             ゲームスタート
           </Button>
-          <Divider my={16} />
-          <Button component={Link} href='/score' w='100%'>
+          <Divider my={24} />
+          <Button
+            variant='gradient'
+            gradient={{ from: 'blue', to: 'indigo', deg: 90 }}
+            component={Link}
+            href='/score'
+            w='100%'
+          >
             スコアはこっち
           </Button>
         </Modal.Body>

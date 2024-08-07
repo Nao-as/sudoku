@@ -3,9 +3,11 @@
 import { generateSudoku, isValid } from '@/util/sudoke'
 import {
   ActionIcon,
+  Button,
   Group,
   LoadingOverlay,
-  UnstyledButton,
+  Text,
+  Title,
 } from '@mantine/core'
 import { useCallback, useEffect, useState } from 'react'
 import { TbTrash } from 'react-icons/tb'
@@ -34,29 +36,24 @@ export const SudokuInit = () => {
     Map<number, number>
   >(new Map()) // 数字の使用回数を管理
   const [visible, setVisible] = useState(false)
-  const timeElapsed = useTimer(isTimerRunning) // カスタムフックを使用
+  const timeElapsed = useTimer(isTimerRunning)
 
-  // ここに数独のロジックを書く
   useEffect(() => {
     if (!isStart) return
+    // ゲーム開始後
     const generateBoard = generateSudoku(mode)
     setBoard(generateBoard)
     calculateNumberCounts(generateBoard)
-
-    setSelectedCell(null)
-    setErrorCells([])
     setIsTimerRunning(true)
   }, [isStart, mode])
 
   const calculateNumberCounts = (board: number[][]) => {
     const counts = new Map<number, number>()
-    // biome-ignore lint/complexity/noForEach: <explanation>
-    board.forEach(row => {
-      // biome-ignore lint/complexity/noForEach: <explanation>
-      row.forEach(num => {
+    for (const row of board) {
+      for (const num of row) {
         if (num !== 0) counts.set(num, (counts.get(num) || 0) + 1)
-      })
-    })
+      }
+    }
 
     setDisableNumberCounts(counts)
   }
@@ -135,11 +132,10 @@ export const SudokuInit = () => {
             rowIndex === row && colIndex === col ? 0 : cell,
           ),
         )
-        setBoard(newBoard)
+        setBoard(newBoard) // ボードの更新
         // エラーセルの状態を更新して、削除されたセルをエラーリストから除外
         setErrorCells(prev => prev.filter(cell => cell !== `${row}-${col}`))
-        // セルの選択を解除
-        setSelectedCell(null)
+        setSelectedCell(null) // セルの選択を解除
       }
     }
   }
@@ -150,6 +146,16 @@ export const SudokuInit = () => {
         <GameStartModal setIsStart={() => setIsStart(true)} setMode={setMode} />
       ) : (
         <div style={{ position: 'relative' }}>
+          <Title ta='center' my={8}>
+            <Text
+              size='3xl'
+              fw={900}
+              variant='gradient'
+              gradient={{ from: 'blue', to: 'green', deg: 90 }}
+            >
+              NaoDoku.com
+            </Text>
+          </Title>
           {/* 進行状況 */}
           <GameProgress
             mode={mode}
@@ -165,7 +171,7 @@ export const SudokuInit = () => {
           />
           {/* 操作ボタン */}
           <Group mt={12} justify='center' gap={8}>
-            {/* delete */}
+            {/* 削除 */}
             <ActionIcon
               variant='light'
               onClick={() => deleteNumberClick()}
@@ -178,20 +184,20 @@ export const SudokuInit = () => {
           </Group>
           <Group mt={12} justify='center' gap={6}>
             {Array.from({ length: 9 }, (_, i) => i + 1).map(number => (
-              <UnstyledButton
+              <Button
                 key={number}
-                color='lime'
+                variant='light'
                 onClick={() => handleNumberClick(number)}
                 disabled={disableNumberCounts.get(number) === 9}
                 w={{ base: 30, md: 48 }}
                 h={{ base: 30, md: 48 }}
                 fz={{ base: 'xs', md: 'lg' }}
                 p={{ base: 'xs', md: 'sm' }}
-                c={disableNumberCounts.get(number) === 9 ? 'gray' : 'lime'}
+                c={disableNumberCounts.get(number) === 9 ? 'gray' : 'blue'}
                 fw='bold'
               >
                 {number}
-              </UnstyledButton>
+              </Button>
             ))}
           </Group>
           {/* ゲームクリアモーダル */}

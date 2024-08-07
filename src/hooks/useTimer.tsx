@@ -1,5 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 
+/**
+ * タイマーのカスタムフック
+ *
+ * @param isRunning
+ * @returns
+ */
 const useTimer = (isRunning: boolean) => {
   const [timeElapsed, setTimeElapsed] = useState(0)
   const timerIdRef = useRef<NodeJS.Timeout | null>(null)
@@ -15,9 +21,7 @@ const useTimer = (isRunning: boolean) => {
     }
 
     return () => {
-      if (timerIdRef.current) {
-        clearInterval(timerIdRef.current)
-      }
+      if (timerIdRef.current) clearInterval(timerIdRef.current)
     }
   }, [isRunning])
 

@@ -29,14 +29,15 @@ export const GameProgress = ({
       style={{ boxShadow: '0 0 4px #7e7e7e', borderRadius: 4 }}
     >
       <Text>
+        難易度：
         {mode === 'easy'
           ? 'かんたん'
           : mode === 'normal'
             ? 'ふつう'
             : 'むずかしい'}
       </Text>
-      <Group>
-        <Text>ミス数: {errorCells}/3</Text>
+      <Group gap={24}>
+        <Text>間違い: {errorCells}/3</Text>
         <Flex align={'center'} gap={4}>
           <TbClock style={{ width: rem(18), height: rem(18) }} />
           {formatTime(timeElapsed)}秒

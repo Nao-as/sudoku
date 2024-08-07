@@ -13,20 +13,36 @@ import {
   Text,
   Title,
 } from '@mantine/core'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { TbHome2, TbScoreboard } from 'react-icons/tb'
 
 export const dynamic = 'force-dynamic'
 export const fetchCache = 'force-no-store'
 
+export const metadata: Metadata = {
+  title: '統計',
+  description: '数独アプリの統計情報です',
+}
+
 export default async function ScorePage() {
   const scores = await getModeToal()
 
   return (
     <Container size={'sm'} my={20}>
+      <Title ta='center' my={8}>
+        <Text
+          size='3xl'
+          fw={900}
+          variant='gradient'
+          gradient={{ from: 'blue', to: 'green', deg: 90 }}
+        >
+          NaoDoku.com
+        </Text>
+      </Title>
       <Paper p={'md'} shadow={'xs'}>
         <Group justify={'space-between'} mb={20}>
-          <Title order={1}>統計</Title>
+          <Title order={2}>統計</Title>
           <Flex gap={8}>
             <Button component={Link} href='/' leftSection={<TbHome2 />}>
               トップに戻る
@@ -36,7 +52,7 @@ export default async function ScorePage() {
               href='/score/easy'
               leftSection={<TbScoreboard />}
             >
-              ランキング
+              スコア
             </Button>
           </Flex>
         </Group>
