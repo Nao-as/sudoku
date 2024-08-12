@@ -6,6 +6,7 @@ const testCases = [
   { mode: 'hard', count: 75 },
 ]
 
+// biome-ignore lint/complexity/noForEach: <explanation>
 testCases.forEach(({ mode, count }) => {
   test(`数独生成:${mode}`, () => {
     const [board] = generateSudoku(mode as 'easy' | 'normal' | 'hard')
