@@ -4,7 +4,7 @@ import type { GameMode } from '@/types/game'
  * 空の9x9数独盤を作成します。
  * @returns {number[][]} ゼロで埋められた9x9の配列。
  */
-const createEmptyBoard = (): number[][] =>
+export const createEmptyBoard = (): number[][] =>
   Array.from({ length: 9 }, () => Array(9).fill(0))
 
 /**
@@ -96,6 +96,15 @@ const isValid = (
   return true
 }
 
+export const validateInput = (
+  solutionBoard: number[][], // 正解版
+  row: number,
+  col: number,
+  inputValue: number,
+): boolean => {
+  return solutionBoard[row][col] === inputValue
+}
+
 /**
  * ランダムにセルを削除して数独パズルを作成します。
  * @param {number[][]} board - 完全に埋まった数独盤。
@@ -114,7 +123,8 @@ const removeCells = (board: number[][], attempts: number): void => {
       board[row][col] = 0
 
       const copy = board.map(row => [...row])
-      if (hasUniqueSolution(copy)) {
+      const isSolutions = solveSudokuWithCount(copy, 0) === 1
+      if (isSolutions) {
         removedCells++
       } else {
         board[row][col] = backup
@@ -122,16 +132,6 @@ const removeCells = (board: number[][], attempts: number): void => {
     }
     tries++
   }
-}
-
-/**
- * 数独盤が一意の解を持つかどうかを確認します。
- * @param {number[][]} board - チェックする数独盤。
- * @returns {boolean} 一意の解がある場合はtrue、それ以外はfalse。
- */
-const hasUniqueSolution = (board: number[][]): boolean => {
-  const solutions = solveSudokuWithCount(board, 0)
-  return solutions === 1
 }
 
 /**
@@ -161,21 +161,24 @@ const solveSudokuWithCount = (board: number[][], count: number): number => {
  * 新しい数独パズルを生成します。
  * @returns {number[][]} 一部のセルが空の生成された数独盤。
  */
-const generateSudoku = (mode: GameMode): number[][] => {
+const generateSudoku = (mode: GameMode): [number[][], number[][]] => {
   const board = createEmptyBoard()
   fillBoard(board)
 
+  const solutionBoard = board.map(row => [...row])
+
   let attempts: number
   if (mode === 'easy') {
-    attempts = 45
+    attempts = 40
   } else if (mode === 'normal') {
     attempts = 65
   } else {
-    attempts = 75
+    attempts = 80
   }
 
   removeCells(board, attempts)
-  return board
+
+  return [board, solutionBoard]
 }
 
 export { isValid, generateSudoku }

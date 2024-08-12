@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import '@mantine/core/styles.css'
-import { createTheme, MantineProvider } from '@mantine/core'
-import './globals.css'
+import MantineUIProvider from '@/config/mantine/mantine'
 
 export const metadata: Metadata = {
   title: {
@@ -11,10 +10,6 @@ export const metadata: Metadata = {
   description: '数独アプリ',
 }
 
-const theme = createTheme({
-  /** Put your mantine theme override here */
-})
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -23,9 +18,7 @@ export default function RootLayout({
   return (
     <html lang='ja'>
       <body>
-        <MantineProvider theme={theme} forceColorScheme='light'>
-          {children}
-        </MantineProvider>
+        <MantineUIProvider>{children}</MantineUIProvider>
       </body>
     </html>
   )
