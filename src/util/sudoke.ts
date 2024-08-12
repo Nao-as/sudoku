@@ -169,11 +169,11 @@ const generateSudoku = (mode: GameMode): [number[][], number[][]] => {
 
   let attempts: number
   if (mode === 'easy') {
-    attempts = 25
+    attempts = 40
   } else if (mode === 'normal') {
     attempts = 65
   } else {
-    attempts = 75
+    attempts = 80
   }
 
   removeCells(board, attempts)
