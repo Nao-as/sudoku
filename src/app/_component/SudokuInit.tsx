@@ -1,6 +1,6 @@
 'use client'
 
-import { generateSudoku, isValid } from '@/util/sudoke'
+import { createEmptyBoard, generateSudoku, validateInput } from '@/util/sudoke'
 import {
   ActionIcon,
   Button,
@@ -9,15 +9,15 @@ import {
   Text,
   Title,
 } from '@mantine/core'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { TbTrash } from 'react-icons/tb'
-import { SudokuBoard } from './SudokuBoard'
 import { GameOverModal } from './GameOverModal'
 import { GameClearModal } from './GameClearModal'
 import { GameStartModal } from './GameStartModal'
 import { GameProgress } from './GameProgress'
-import type { GameMode } from '@/types/game'
+import { SudokuBoard } from './SudokuBoard'
 import { gameComplete } from '../_action'
+import type { GameMode } from '@/types/game'
 import useTimer from '@/hooks/useTimer'
 
 export const SudokuInit = () => {
@@ -37,12 +37,14 @@ export const SudokuInit = () => {
   >(new Map()) // 数字の使用回数を管理
   const [visible, setVisible] = useState(false)
   const timeElapsed = useTimer(isTimerRunning)
+  const solutionBoard = useRef<number[][]>(createEmptyBoard())
 
   useEffect(() => {
     if (!isStart) return
     // ゲーム開始後
-    const generateBoard = generateSudoku(mode)
+    const [generateBoard, solutionBoardd] = generateSudoku(mode)
     setBoard(generateBoard)
+    solutionBoard.current = solutionBoardd
     calculateNumberCounts(generateBoard)
     setIsTimerRunning(true)
   }, [isStart, mode])
@@ -108,7 +110,7 @@ export const SudokuInit = () => {
           ),
         )
 
-        if (isValid(board, row, col, number)) {
+        if (validateInput(solutionBoard.current, row, col, number)) {
           setBoard(newBoard)
           setErrorCells(prev => prev.filter(cell => cell !== `${row}-${col}`))
           setSelectedCell(null) // 選択解除
